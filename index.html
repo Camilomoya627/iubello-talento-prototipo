@@ -1,0 +1,2179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IUBello Talento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,500;0,600;0,700;1,500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============ DESIGN TOKENS ============ */
+:root{
+  --navy-950:#0F1D33;
+  --navy-900:#142B4F;
+  --navy-800:#1F3E6E;
+  --navy-700:#2A4E85;
+  --navy-100:#E7ECF4;
+  --navy-050:#F3F6FA;
+  --gold-700:#8F6323;
+  --gold-600:#A9762C;
+  --gold-500:#B8863C;
+  --gold-100:#F3E7D2;
+  --bg:#F5F6F8;
+  --surface:#FFFFFF;
+  --text:#181C24;
+  --text-muted:#5B6472;
+  --text-faint:#8A93A3;
+  --border:#E1E5EB;
+  --border-strong:#C9D0DB;
+  --success:#276A4F;
+  --success-bg:#E3F1EA;
+  --warning:#8A5B10;
+  --warning-bg:#FBF0DC;
+  --danger:#A03A3A;
+  --danger-bg:#F8E9E9;
+  --info:#2A5C99;
+  --info-bg:#E7EEF7;
+  --neutral-bg:#EDEFF3;
+  --radius-sm:6px;
+  --radius-md:10px;
+  --radius-lg:16px;
+  --shadow-card:0 1px 2px rgba(15,29,51,0.06), 0 1px 1px rgba(15,29,51,0.04);
+  --shadow-pop:0 12px 32px rgba(15,29,51,0.18);
+  --font-display:'Source Serif 4', Georgia, serif;
+  --font-body:'IBM Plex Sans', -apple-system, 'Segoe UI', sans-serif;
+}
+
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0;
+  font-family:var(--font-body);
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:var(--font-display); margin:0; color:var(--navy-950); font-weight:600;}
+p{margin:0;}
+button{font-family:var(--font-body); cursor:pointer;}
+a{color:inherit;}
+::selection{background:var(--gold-100);}
+
+/* focus visibility */
+button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible{
+  outline:2px solid var(--navy-700);
+  outline-offset:2px;
+}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+}
+
+.scroll-fade{animation:fadeIn .25s ease;}
+@keyframes fadeIn{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+
+/* ============ APP ROOT ============ */
+#app{min-height:100vh;}
+.hidden{display:none !important;}
+
+/* ============ PROTOTYPE BADGE ============ */
+.proto-tag{
+  font-size:11px;
+  color:var(--text-faint);
+  letter-spacing:.01em;
+  border:1px solid var(--border);
+  padding:3px 9px;
+  border-radius:999px;
+  background:var(--surface);
+  white-space:nowrap;
+}
+
+/* ============ LOGIN SCREEN ============ */
+.login-wrap{
+  min-height:100vh;
+  display:grid;
+  grid-template-columns:1.15fr 1fr;
+}
+@media (max-width:860px){ .login-wrap{grid-template-columns:1fr;} .login-visual{display:none;} }
+
+.login-visual{
+  background:linear-gradient(165deg, var(--navy-950) 0%, var(--navy-900) 55%, var(--navy-800) 100%);
+  color:#fff;
+  padding:64px 56px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  position:relative;
+  overflow:hidden;
+}
+.login-visual::after{
+  content:"";
+  position:absolute;
+  right:-120px; top:-120px;
+  width:420px; height:420px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.login-visual::before{
+  content:"";
+  position:absolute;
+  right:-60px; bottom:-160px;
+  width:320px; height:320px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.login-brand{display:flex; align-items:center; gap:12px; position:relative; z-index:1;}
+.login-mark{
+  width:44px; height:44px; border-radius:10px;
+  background:var(--gold-500);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-display); font-weight:700; color:var(--navy-950); font-size:19px;
+}
+.login-brand-name{font-family:var(--font-display); font-size:20px; font-weight:600; letter-spacing:.01em;}
+.login-brand-sub{font-size:12px; color:rgba(255,255,255,0.6); margin-top:1px;}
+
+.login-hero{position:relative; z-index:1; max-width:460px;}
+.login-hero h1{color:#fff; font-size:38px; line-height:1.18; font-weight:600;}
+.login-hero .accent{color:var(--gold-500);}
+.login-hero p{color:rgba(255,255,255,0.72); margin-top:18px; font-size:15px; line-height:1.6;}
+
+.login-flow{display:flex; gap:0; margin-top:36px; position:relative; z-index:1;}
+.login-flow-step{flex:1; padding-right:14px; position:relative;}
+.login-flow-step:not(:last-child)::after{
+  content:"→"; position:absolute; right:-2px; top:0; color:rgba(255,255,255,0.35); font-size:14px;
+}
+.login-flow-step .n{font-family:var(--font-display); font-size:13px; color:var(--gold-500); font-weight:600;}
+.login-flow-step .t{font-size:12.5px; color:rgba(255,255,255,0.75); margin-top:4px; line-height:1.4;}
+
+.login-foot{position:relative; z-index:1; font-size:12px; color:rgba(255,255,255,0.45);}
+
+.login-panel{
+  display:flex; align-items:center; justify-content:center;
+  padding:40px 32px;
+}
+.login-card{width:100%; max-width:380px;}
+.login-card-head{margin-bottom:28px;}
+.login-card-head h2{font-size:23px;}
+.login-card-head p{color:var(--text-muted); font-size:13.5px; margin-top:6px;}
+
+.field{margin-bottom:16px;}
+.field label{display:block; font-size:12.5px; font-weight:600; color:var(--text); margin-bottom:6px;}
+.field input, .field select, .field textarea{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid var(--border-strong);
+  border-radius:var(--radius-sm);
+  font-size:14px;
+  font-family:var(--font-body);
+  background:var(--surface);
+  color:var(--text);
+}
+.field textarea{resize:vertical; min-height:80px;}
+.field input:focus, .field select:focus, .field textarea:focus{border-color:var(--navy-700);}
+.field-hint{font-size:11.5px; color:var(--text-faint); margin-top:5px;}
+
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  border-radius:var(--radius-sm);
+  border:1px solid transparent;
+  padding:10px 18px;
+  font-size:13.5px;
+  font-weight:600;
+  transition:background .12s ease, border-color .12s ease, color .12s ease;
+}
+.btn-primary{background:var(--navy-900); color:#fff;}
+.btn-primary:hover{background:var(--navy-800);}
+.btn-primary:disabled{background:var(--neutral-bg); color:var(--text-faint); cursor:default;}
+.btn-gold{background:var(--gold-600); color:#fff;}
+.btn-gold:hover{background:var(--gold-700);}
+.btn-outline{background:var(--surface); color:var(--navy-900); border-color:var(--border-strong);}
+.btn-outline:hover{border-color:var(--navy-700); background:var(--navy-050);}
+.btn-ghost{background:transparent; color:var(--text-muted); border-color:transparent;}
+.btn-ghost:hover{background:var(--neutral-bg); color:var(--text);}
+.btn-sm{padding:6px 12px; font-size:12.5px;}
+.btn-block{width:100%;}
+.btn-danger-outline{background:var(--surface); color:var(--danger); border-color:var(--danger-bg);}
+.btn-danger-outline:hover{background:var(--danger-bg);}
+
+.login-divider{display:flex; align-items:center; gap:10px; margin:22px 0; color:var(--text-faint); font-size:12px;}
+.login-divider::before,.login-divider::after{content:""; flex:1; height:1px; background:var(--border);}
+
+.demo-roles{display:flex; flex-direction:column; gap:8px;}
+.demo-role-btn{
+  display:flex; align-items:center; gap:12px;
+  padding:11px 13px;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  background:var(--surface);
+  text-align:left;
+  width:100%;
+}
+.demo-role-btn:hover{border-color:var(--navy-700); background:var(--navy-050);}
+.demo-role-icon{
+  width:32px; height:32px; border-radius:8px; flex:none;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--navy-100); color:var(--navy-900); font-weight:700; font-size:13px; font-family:var(--font-display);
+}
+.demo-role-text b{display:block; font-size:13px; color:var(--text);}
+.demo-role-text span{display:block; font-size:11.5px; color:var(--text-faint); margin-top:1px;}
+
+.login-error{
+  background:var(--danger-bg); color:var(--danger); border-radius:var(--radius-sm);
+  padding:9px 12px; font-size:12.5px; margin-bottom:14px;
+}
+
+/* ============ APP SHELL ============ */
+.shell{display:grid; grid-template-columns:236px 1fr; min-height:100vh;}
+@media (max-width:900px){ .shell{grid-template-columns:76px 1fr;} }
+
+.sidebar{
+  background:var(--navy-950);
+  color:#fff;
+  padding:22px 16px;
+  display:flex;
+  flex-direction:column;
+  position:sticky; top:0; height:100vh;
+}
+.sb-brand{display:flex; align-items:center; gap:10px; padding:0 6px 22px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:18px;}
+.sb-mark{width:34px; height:34px; border-radius:8px; background:var(--gold-500); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:700; color:var(--navy-950); font-size:15px; flex:none;}
+.sb-brand-text{line-height:1.25;}
+.sb-brand-text b{font-family:var(--font-display); font-size:14.5px; display:block;}
+.sb-brand-text span{font-size:10.5px; color:rgba(255,255,255,0.5);}
+@media (max-width:900px){ .sb-brand-text, .nav-label, .sb-role-tag span{display:none;} }
+
+.sb-role-tag{font-size:10.5px; text-transform:none; letter-spacing:.02em; color:var(--gold-500); padding:0 6px; margin-bottom:14px; font-weight:600;}
+
+.nav-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px; flex:1;}
+.nav-item button{
+  width:100%; display:flex; align-items:center; gap:12px;
+  background:transparent; border:none; color:rgba(255,255,255,0.68);
+  padding:10px 12px; border-radius:var(--radius-sm); font-size:13.5px; font-weight:500;
+  text-align:left;
+}
+.nav-item button:hover{background:rgba(255,255,255,0.06); color:#fff;}
+.nav-item.active button{background:rgba(255,255,255,0.1); color:#fff;}
+.nav-item.active button .nav-dot{background:var(--gold-500);}
+.nav-icon{width:18px; height:18px; flex:none; display:flex; align-items:center; justify-content:center;}
+.nav-icon svg{width:17px; height:17px;}
+
+.sb-foot{border-top:1px solid rgba(255,255,255,0.1); padding-top:14px; margin-top:10px;}
+.sb-user{display:flex; align-items:center; gap:10px; padding:0 6px; margin-bottom:10px;}
+.sb-avatar{width:32px; height:32px; border-radius:50%; background:var(--navy-700); display:flex; align-items:center; justify-content:center; font-size:12.5px; font-weight:700; flex:none;}
+.sb-user-text{line-height:1.25; overflow:hidden;}
+.sb-user-text b{font-size:12.5px; display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.sb-user-text span{font-size:10.5px; color:rgba(255,255,255,0.5);}
+.sb-logout{width:100%; background:transparent; border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.75); padding:8px 12px; border-radius:var(--radius-sm); font-size:12.5px; display:flex; align-items:center; gap:8px; justify-content:center;}
+.sb-logout:hover{background:rgba(255,255,255,0.08); color:#fff;}
+
+/* ============ MAIN AREA ============ */
+.main{display:flex; flex-direction:column; min-width:0;}
+.topbar{
+  background:var(--surface); border-bottom:1px solid var(--border);
+  padding:16px 32px; display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:5;
+}
+.topbar h1{font-size:20px;}
+.topbar-sub{font-size:12.5px; color:var(--text-muted); margin-top:3px;}
+.content{padding:28px 32px 60px; flex:1;}
+@media (max-width:640px){ .topbar{padding:14px 18px;} .content{padding:20px 16px 48px;} }
+
+/* ============ CARDS / GRIDS ============ */
+.card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-card);}
+.card-pad{padding:20px 22px;}
+.grid{display:grid; gap:16px;}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+@media (max-width:980px){ .grid-4{grid-template-columns:repeat(2,1fr);} .grid-3{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:640px){ .grid-4,.grid-3,.grid-2{grid-template-columns:1fr;} }
+
+.section{margin-bottom:30px;}
+.section-head{display:flex; align-items:baseline; justify-content:space-between; margin-bottom:14px; gap:12px; flex-wrap:wrap;}
+.section-head h2{font-size:17px;}
+.section-head .desc{font-size:12.5px; color:var(--text-muted); margin-top:3px;}
+
+.kpi-card{padding:18px 20px;}
+.kpi-num{font-family:var(--font-display); font-size:32px; color:var(--navy-950); font-weight:700; line-height:1;}
+.kpi-label{font-size:12.5px; color:var(--text-muted); margin-top:8px;}
+.kpi-icon{width:34px; height:34px; border-radius:9px; background:var(--navy-100); color:var(--navy-800); display:flex; align-items:center; justify-content:center; margin-bottom:12px;}
+.kpi-icon svg{width:17px; height:17px;}
+
+/* ============ BADGES ============ */
+.badge{display:inline-flex; align-items:center; gap:5px; padding:4px 10px; border-radius:999px; font-size:11.5px; font-weight:600; white-space:nowrap;}
+.badge-dot{width:6px; height:6px; border-radius:50%; background:currentColor;}
+.badge-info{background:var(--info-bg); color:var(--info);}
+.badge-success{background:var(--success-bg); color:var(--success);}
+.badge-warning{background:var(--warning-bg); color:var(--warning);}
+.badge-danger{background:var(--danger-bg); color:var(--danger);}
+.badge-neutral{background:var(--neutral-bg); color:var(--text-muted);}
+.badge-gold{background:var(--gold-100); color:var(--gold-700);}
+
+/* ============ TABLE ============ */
+.table-wrap{overflow-x:auto;}
+table{width:100%; border-collapse:collapse; font-size:13.5px;}
+th{text-align:left; font-size:11.5px; text-transform:none; color:var(--text-faint); font-weight:600; padding:0 14px 10px; border-bottom:1px solid var(--border); white-space:nowrap;}
+td{padding:13px 14px; border-bottom:1px solid var(--border); color:var(--text); vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:var(--navy-050);}
+.cell-strong{font-weight:600; color:var(--navy-950);}
+.cell-muted{color:var(--text-muted); font-size:12.5px;}
+
+/* ============ VACANCY CARD ============ */
+.vac-card{padding:18px 20px; display:flex; flex-direction:column; gap:10px; cursor:pointer; transition:border-color .12s ease, box-shadow .12s ease;}
+.vac-card:hover{border-color:var(--navy-700); box-shadow:0 4px 14px rgba(15,29,51,0.08);}
+.vac-card-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+.vac-title{font-family:var(--font-display); font-size:16.5px; color:var(--navy-950); font-weight:600;}
+.vac-company{font-size:12.5px; color:var(--text-muted); margin-top:2px;}
+.vac-meta{display:flex; flex-wrap:wrap; gap:7px;}
+.vac-tag{display:inline-flex; align-items:center; gap:4px; font-size:11.5px; padding:4px 9px; border-radius:6px; background:var(--navy-050); color:var(--navy-800); border:1px solid var(--navy-100);}
+.tag-icon{width:12px; height:12px; flex:none;}
+.vac-foot{display:flex; justify-content:space-between; align-items:center; font-size:11.5px; color:var(--text-faint); padding-top:8px; border-top:1px solid var(--border);}
+
+/* ============ FILTER BAR ============ */
+.filter-bar{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:18px;}
+.filter-bar input[type=text]{flex:1; min-width:180px;}
+.filter-bar select, .filter-bar input{padding:9px 12px; border:1px solid var(--border-strong); border-radius:var(--radius-sm); font-size:13px; background:var(--surface); font-family:var(--font-body);}
+
+/* ============ PROGRESS BAR ============ */
+.progress-track{width:100%; height:9px; border-radius:999px; background:var(--neutral-bg); overflow:hidden;}
+.progress-fill{height:100%; background:linear-gradient(90deg, var(--gold-600), var(--gold-500)); border-radius:999px;}
+.progress-label{display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); margin-bottom:7px;}
+
+/* ============ KPI HIERARCHY ============ */
+.kpi-primary{padding:22px 24px;}
+.kpi-primary .kpi-num{font-size:38px;}
+.kpi-primary .kpi-icon{width:38px; height:38px; background:var(--navy-950); color:var(--gold-500);}
+.kpi-secondary{padding:15px 18px;}
+.kpi-secondary .kpi-num{font-size:23px;}
+.kpi-secondary .kpi-label{margin-top:5px; font-size:11.5px;}
+.kpi-secondary .kpi-icon{width:28px; height:28px; margin-bottom:8px;}
+
+/* ============ TIMELINE (Mi práctica) ============ */
+.timeline{display:flex; justify-content:space-between; position:relative; padding:8px 4px 0;}
+.timeline::before{content:""; position:absolute; top:17px; left:24px; right:24px; height:1px; background:var(--border);}
+.timeline-item{flex:1; position:relative; text-align:center; padding:0 6px;}
+.timeline-dot{width:34px; height:34px; border-radius:50%; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; position:relative; z-index:1; background:var(--surface); border:2px solid var(--border-strong); color:var(--text-faint);}
+.timeline-item.done .timeline-dot{background:var(--success); border-color:var(--success); color:#fff;}
+.timeline-item.current .timeline-dot{background:var(--gold-600); border-color:var(--gold-600); color:#fff; box-shadow:0 0 0 4px var(--gold-100);}
+.timeline-item.pending .timeline-dot{background:var(--surface); border-color:var(--border-strong); color:var(--text-faint);}
+.timeline-dot svg{width:15px; height:15px;}
+.timeline-name{font-size:12.5px; font-weight:600; color:var(--text);}
+.timeline-state{font-size:11px; color:var(--text-muted); margin-top:2px;}
+.timeline-item.current .timeline-state{color:var(--gold-700); font-weight:600;}
+.timeline-date{font-size:10.5px; color:var(--text-faint); margin-top:3px; line-height:1.4;}
+@media (max-width:760px){
+  .timeline{flex-direction:column; gap:20px; align-items:flex-start;}
+  .timeline::before{display:none;}
+  .timeline-item{display:flex; align-items:flex-start; gap:12px; text-align:left; padding:0; width:100%;}
+  .timeline-dot{margin:0;}
+  .timeline-item:not(:last-child)::after{content:""; position:absolute; left:16px; top:34px; width:1px; height:calc(100% + 4px); background:var(--border);}
+}
+
+/* ============ HOURS STAT CARDS ============ */
+.hours-stats{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:18px;}
+.hours-stat{border:1px solid var(--border); border-radius:var(--radius-md); padding:14px 16px; text-align:center; background:var(--navy-050);}
+.hours-stat .n{font-family:var(--font-display); font-size:24px; font-weight:700; color:var(--navy-950);}
+.hours-stat .l{font-size:11px; color:var(--text-muted); margin-top:4px;}
+.hours-pct-tag{display:inline-block; background:var(--gold-100); color:var(--gold-700); font-size:12px; font-weight:600; padding:4px 11px; border-radius:999px; margin-top:8px;}
+
+/* ============ VERTICAL BAR CHART (evolución) ============ */
+.vbar-chart{display:flex; align-items:flex-end; gap:14px; height:140px; padding-top:10px;}
+.vbar-col{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%;}
+.vbar-value{font-size:11px; color:var(--text-muted); margin-bottom:6px;}
+.vbar-track{width:100%; max-width:34px; background:var(--navy-800); border-radius:5px 5px 2px 2px;}
+.vbar-label{font-size:11px; color:var(--text-faint); margin-top:8px;}
+
+/* ============ BAR CHART (CSS) ============ */
+.bar-chart{display:flex; flex-direction:column; gap:12px;}
+.bar-row{display:grid; grid-template-columns:170px 1fr 40px; align-items:center; gap:12px;}
+.bar-row .bar-label{font-size:12.5px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.bar-track{height:10px; border-radius:999px; background:var(--neutral-bg); overflow:hidden;}
+.bar-fill{height:100%; border-radius:999px; background:var(--navy-800);}
+.bar-value{font-size:12px; color:var(--text-muted); text-align:right;}
+@media (max-width:640px){ .bar-row{grid-template-columns:110px 1fr 32px;} }
+
+/* ============ MODAL ============ */
+.modal-overlay{
+  position:fixed; inset:0; background:rgba(15,20,30,0.55);
+  display:flex; align-items:flex-start; justify-content:center;
+  padding:40px 20px; overflow-y:auto; z-index:50;
+}
+.modal-box{background:var(--surface); border-radius:var(--radius-lg); max-width:640px; width:100%; box-shadow:var(--shadow-pop); animation:fadeIn .18s ease;}
+.modal-head{display:flex; justify-content:space-between; align-items:flex-start; padding:22px 26px; border-bottom:1px solid var(--border);}
+.modal-body{padding:22px 26px;}
+.modal-foot{padding:18px 26px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px;}
+.modal-close{background:none; border:none; color:var(--text-faint); font-size:20px; line-height:1; padding:4px;}
+.modal-close:hover{color:var(--text);}
+
+/* ============ MISC ============ */
+.divider{height:1px; background:var(--border); margin:18px 0;}
+.muted{color:var(--text-muted);}
+.faint{color:var(--text-faint); font-size:12px;}
+.two-col{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+@media (max-width:760px){ .two-col{grid-template-columns:1fr;} }
+.tag-list{display:flex; flex-wrap:wrap; gap:7px;}
+.doc-row{display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border);}
+.doc-row:last-child{border-bottom:none;}
+.doc-name{font-size:13.5px; font-weight:500;}
+.empty-state{padding:40px 20px; text-align:center; color:var(--text-muted);}
+.empty-state h3{font-size:15px; color:var(--text); margin-bottom:6px;}
+.toast{
+  position:fixed; bottom:26px; left:50%; transform:translateX(-50%);
+  background:var(--navy-950); color:#fff; padding:12px 20px; border-radius:var(--radius-sm);
+  font-size:13px; box-shadow:var(--shadow-pop); z-index:80; display:flex; align-items:center; gap:10px;
+  animation:fadeIn .2s ease;
+}
+.toast .dot{width:7px; height:7px; border-radius:50%; background:var(--gold-500);}
+.phase-list{display:flex; flex-direction:column; gap:0;}
+.phase-item{display:grid; grid-template-columns:34px 1fr; gap:14px; padding:14px 0; border-bottom:1px solid var(--border);}
+.phase-item:last-child{border-bottom:none;}
+.phase-num{font-family:var(--font-display); font-weight:700; color:var(--gold-600); font-size:15px;}
+.phase-title{font-weight:600; font-size:13.5px; margin-bottom:3px;}
+.phase-desc{font-size:12.5px; color:var(--text-muted); line-height:1.5;}
+.avatar-init{width:38px; height:38px; border-radius:50%; background:var(--navy-100); color:var(--navy-800); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex:none;}
+.info-row{display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--border); font-size:13px;}
+.info-row:last-child{border-bottom:none;}
+.info-row .k{color:var(--text-muted);}
+.info-row .v{font-weight:500; text-align:right;}
+.rotate-180{transform:rotate(180deg);}
+
+/* ============ LANDING PAGE ============ */
+.landing-page{background:var(--surface);}
+.landing-nav{
+  position:sticky; top:0; z-index:10; background:rgba(255,255,255,0.92); backdrop-filter:blur(6px);
+  border-bottom:1px solid var(--border);
+  padding:16px 40px; display:flex; align-items:center; justify-content:space-between;
+}
+.landing-nav-brand{display:flex; align-items:center; gap:10px;}
+.landing-nav-mark{width:32px; height:32px; border-radius:8px; background:var(--navy-950); color:var(--gold-500); display:flex; align-items:center; justify-content:center; flex:none;}
+.landing-nav-brand b{font-family:var(--font-display); font-size:15.5px;}
+@media (max-width:640px){ .landing-nav{padding:14px 18px;} }
+
+.landing-hero{
+  background:radial-gradient(circle at 15% 20%, rgba(184,134,60,0.14), transparent 45%), linear-gradient(165deg, var(--navy-950) 0%, var(--navy-900) 55%, var(--navy-800) 100%);
+  color:#fff; padding:88px 40px 96px; text-align:center; position:relative; overflow:hidden;
+}
+.landing-hero::after{content:""; position:absolute; right:-140px; top:-140px; width:420px; height:420px; border-radius:50%; border:1px solid rgba(255,255,255,0.08);}
+.landing-hero-inner{max-width:760px; margin:0 auto; position:relative; z-index:1;}
+.landing-eyebrow{display:inline-flex; align-items:center; gap:8px; font-size:12px; color:var(--gold-500); background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14); padding:6px 14px; border-radius:999px; margin-bottom:26px;}
+.landing-hero h1{color:#fff; font-size:46px; line-height:1.16; font-weight:600;}
+.landing-hero h1 .accent{color:var(--gold-500);}
+.landing-hero .tagline{font-family:var(--font-display); font-size:17px; color:rgba(255,255,255,0.82); margin-top:16px;}
+.landing-hero p.desc{color:rgba(255,255,255,0.68); font-size:14.5px; line-height:1.7; max-width:560px; margin:18px auto 0;}
+.landing-cta-row{display:flex; gap:12px; justify-content:center; margin-top:34px; flex-wrap:wrap;}
+@media (max-width:640px){ .landing-hero{padding:60px 20px 72px;} .landing-hero h1{font-size:32px;} }
+
+.landing-section{padding:76px 40px;}
+@media (max-width:640px){ .landing-section{padding:52px 20px;} }
+.landing-section-inner{max-width:1040px; margin:0 auto;}
+.landing-section.alt{background:var(--navy-050);}
+.landing-kicker{font-size:12.5px; color:var(--gold-600); font-weight:600; margin-bottom:10px;}
+.landing-section h2{font-size:27px; max-width:620px;}
+.landing-section .lead{color:var(--text-muted); font-size:14.5px; max-width:600px; margin-top:12px; line-height:1.7;}
+
+.flow-diagram{display:flex; align-items:center; justify-content:center; gap:0; flex-wrap:wrap; margin-top:44px;}
+.flow-node{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); box-shadow:var(--shadow-card); padding:18px 24px; text-align:center; min-width:150px;}
+.flow-node b{display:block; font-size:13px; color:var(--navy-950);}
+.flow-node span{font-size:11.5px; color:var(--text-faint);}
+.flow-node.center{background:var(--navy-950); color:#fff; border-color:var(--navy-950); padding:26px 30px;}
+.flow-node.center b{color:#fff; font-family:var(--font-display); font-size:15px;}
+.flow-node.center span{color:rgba(255,255,255,0.6);}
+.flow-arrow{color:var(--text-faint); padding:0 18px; font-size:18px;}
+.flow-col{display:flex; flex-direction:column; gap:18px; align-items:center;}
+@media (max-width:760px){ .flow-diagram{flex-direction:column;} .flow-arrow{transform:rotate(90deg); padding:8px 0;} }
+
+.step-row{display:grid; grid-template-columns:repeat(3,1fr); gap:0; margin-top:44px; align-items:flex-start;}
+.step-card{text-align:center; padding:0 18px; position:relative;}
+.step-num{width:38px; height:38px; border-radius:50%; background:var(--navy-950); color:var(--gold-500); font-family:var(--font-display); font-weight:700; display:flex; align-items:center; justify-content:center; margin:0 auto 16px; font-size:15px;}
+.step-card h3{font-size:14.5px; margin-bottom:8px;}
+.step-card p{font-size:12.5px; color:var(--text-muted); line-height:1.6;}
+.step-connector{position:absolute; top:19px; left:calc(50% + 30px); right:calc(-50% + 30px); height:1px; background:var(--border);}
+@media (max-width:760px){ .step-row{grid-template-columns:1fr; gap:32px;} .step-connector{display:none;} }
+
+.benefit-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:40px;}
+@media (max-width:900px){ .benefit-grid{grid-template-columns:1fr;} }
+.benefit-card{background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg); padding:26px 24px; box-shadow:var(--shadow-card);}
+.benefit-icon{width:38px; height:38px; border-radius:10px; background:var(--navy-100); color:var(--navy-800); display:flex; align-items:center; justify-content:center; margin-bottom:16px;}
+.benefit-card h3{font-size:15px; margin-bottom:12px;}
+.benefit-card ul{margin:0; padding:0 0 0 16px; font-size:12.5px; color:var(--text-muted); line-height:2;}
+
+.impact-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:40px;}
+@media (max-width:900px){ .impact-grid{grid-template-columns:1fr;} }
+.impact-item{display:flex; gap:12px; background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:16px 18px;}
+.impact-item .dot{width:8px; height:8px; border-radius:50%; background:var(--gold-500); margin-top:6px; flex:none;}
+.impact-item p{font-size:13px; color:var(--text); line-height:1.55;}
+
+.future-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:14px; margin-top:40px;}
+.future-item{border:1px dashed var(--border-strong); border-radius:var(--radius-md); padding:18px; background:var(--surface);}
+.future-item h4{font-size:13px; margin-bottom:6px; color:var(--navy-950);}
+.future-item p{font-size:12px; color:var(--text-muted); line-height:1.55;}
+
+.landing-footer{background:var(--navy-950); color:rgba(255,255,255,0.65); padding:52px 40px 32px; text-align:center;}
+.landing-footer h2{color:#fff; font-size:22px; margin-bottom:14px;}
+.landing-footer p{font-size:13.5px; max-width:480px; margin:0 auto 26px; line-height:1.6;}
+.landing-footer .fineprint{margin-top:34px; font-size:11.5px; color:rgba(255,255,255,0.35);}
+@media (max-width:640px){ .landing-footer{padding:40px 20px 24px;} }
+
+/* ============ MODO DEMOSTRACIÓN (topbar role switcher) ============ */
+.demo-switch{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+.demo-switch-label{font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-faint); font-weight:600;}
+.demo-switch-group{display:flex; gap:3px; background:var(--neutral-bg); border-radius:999px; padding:3px;}
+.demo-switch-group button{
+  border:none; background:transparent; padding:6px 13px; border-radius:999px; font-size:12px; font-weight:600;
+  color:var(--text-muted);
+}
+.demo-switch-group button.active{background:var(--navy-950); color:#fff;}
+.demo-switch-group button:not(.active):hover{color:var(--text);}
+@media (max-width:760px){ .demo-switch-label{display:none;} }
+
+/* ============ MOBILE SIDEBAR DRAWER ============ */
+.menu-toggle{display:none; background:none; border:1px solid var(--border-strong); border-radius:var(--radius-sm); padding:8px; color:var(--text);}
+.sidebar-backdrop{display:none;}
+@media (max-width:760px){
+  .shell{grid-template-columns:1fr;}
+  .sidebar{position:fixed; left:0; top:0; width:250px; height:100vh; transform:translateX(-100%); transition:transform .22s ease; z-index:60;}
+  .sidebar.open{transform:translateX(0);}
+  .sb-brand-text, .nav-label, .sb-user-text{display:flex; flex-direction:column;}
+  .menu-toggle{display:inline-flex;}
+  .sidebar-backdrop.open{display:block; position:fixed; inset:0; background:rgba(10,15,25,0.5); z-index:55;}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* =========================================================================
+   IUBello Talento — Prototipo conceptual
+   Datos de demostración ficticios. No representa información real de IUBello.
+   ========================================================================= */
+
+/* ---------- ICONOS (línea, 24x24) ---------- */
+const ICONS = {
+  home: '<path d="M4 11.5 12 4l8 7.5"/><path d="M6 10v9a1 1 0 0 0 1 1h4v-6h2v6h4a1 1 0 0 0 1-1v-9"/>',
+  briefcase: '<rect x="3.5" y="7.5" width="17" height="11.5" rx="2"/><path d="M8.5 7.5V6a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v1.5"/><path d="M3.5 12.5h17"/>',
+  list: '<path d="M8 6h12"/><path d="M8 12h12"/><path d="M8 18h12"/><circle cx="4" cy="6" r="1"/><circle cx="4" cy="12" r="1"/><circle cx="4" cy="18" r="1"/>',
+  progress: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.5 2"/>',
+  folder: '<path d="M3.5 7.5a1.5 1.5 0 0 1 1.5-1.5h4l2 2.2h8a1.5 1.5 0 0 1 1.5 1.5v8.3a1.5 1.5 0 0 1-1.5 1.5H5a1.5 1.5 0 0 1-1.5-1.5Z"/>',
+  user: '<circle cx="12" cy="8.2" r="3.4"/><path d="M4.8 19.5a7.2 7.2 0 0 1 14.4 0"/>',
+  building: '<rect x="5" y="3.5" width="14" height="17" rx="1"/><path d="M9 8h2M13 8h2M9 12h2M13 12h2M9 16h2M13 16h2"/>',
+  candidates: '<circle cx="9" cy="8.5" r="3"/><path d="M3 19a6 6 0 0 1 12 0"/><circle cx="17.5" cy="9" r="2.3"/><path d="M14.6 19a5 5 0 0 1 6.8-4.6"/>',
+  grid: '<rect x="4" y="4" width="7" height="7" rx="1.2"/><rect x="13" y="4" width="7" height="7" rx="1.2"/><rect x="4" y="13" width="7" height="7" rx="1.2"/><rect x="13" y="13" width="7" height="7" rx="1.2"/>',
+  chart: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+  doc: '<path d="M7 3.5h7l4 4V19a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19V5A1.5 1.5 0 0 1 7 3.5Z"/><path d="M14 3.5V8h4"/>',
+  report: '<path d="M6 3.5h9l3 3V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5A1 1 0 0 1 6 3.5Z"/><path d="M9 12h6M9 15.5h6M9 8.5h3"/>',
+  logout: '<path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3"/><path d="M15 16l4-4-4-4"/><path d="M19 12H9"/>',
+  search: '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M20 20l-4.8-4.8"/>',
+  pin: '<path d="M12 21s7-6.1 7-11.5A7 7 0 0 0 5 9.5C5 14.9 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.3"/>',
+  calendar: '<rect x="3.5" y="5" width="17" height="15.5" rx="1.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/>',
+  clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+  plus: '<path d="M12 5v14M5 12h14"/>',
+  check: '<path d="M5 12.5l4.5 4.5L19 7"/>',
+  arrowRight: '<path d="M4 12h16"/><path d="M14 6l6 6-6 6"/>',
+};
+function icon(name, cls){ return '<svg class="'+(cls||'')+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+ICONS[name]+'</svg>'; }
+
+/* Símbolo abstracto de IUBello Talento: tres nodos conectados (estudiante · empresa
+   · universidad) alrededor de un punto central (la plataforma). Conexión + crecimiento. */
+function brandMark(px){
+  const s = px || 22;
+  return '<svg width="'+s+'" height="'+s+'" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'
+    + '<path d="M16 6 L7 25 L25 25 Z"/>'
+    + '<path d="M16 6 L16 18M7 25 L16 18M25 25 L16 18" stroke-width="1.3" opacity="0.55"/>'
+    + '<circle cx="16" cy="6" r="1.8" fill="currentColor" stroke="none"/>'
+    + '<circle cx="7" cy="25" r="1.8" fill="currentColor" stroke="none"/>'
+    + '<circle cx="25" cy="25" r="1.8" fill="currentColor" stroke="none"/>'
+    + '<circle cx="16" cy="18" r="2.1" fill="currentColor" stroke="none"/>'
+    + '</svg>';
+}
+
+/* ---------- DATOS BASE ---------- */
+const PROGRAMAS = ["Tecnología en Desarrollo de Software","Administración de Empresas","Tecnología en Gestión Empresarial","Ingeniería de Software"];
+const AREAS = ["Tecnología","Datos y Analítica","Administrativa","Finanzas","Mercadeo"];
+const MODALIDADES = ["Presencial","Híbrida","Remota"];
+const CIUDADES = ["Medellín","Bello","Envigado","Itagüí"];
+
+const EMPRESAS = [
+  {id:"e1", nombre:"Tech Solutions Colombia", sector:"Desarrollo de software", contacto:"contacto@techsolutions.co", vacantesActivas:3, estudiantesVinculados:5, postulacionesRecibidas:24, estado:"Activa"},
+  {id:"e2", nombre:"DataNova", sector:"Datos y analítica", contacto:"talento@datanova.co", vacantesActivas:2, estudiantesVinculados:3, postulacionesRecibidas:19, estado:"Activa"},
+  {id:"e3", nombre:"Grupo Empresarial Antioquia", sector:"Servicios administrativos", contacto:"practicas@geantioquia.com", vacantesActivas:2, estudiantesVinculados:4, postulacionesRecibidas:15, estado:"Activa"},
+  {id:"e4", nombre:"Finanzas del Valle S.A.S", sector:"Servicios financieros", contacto:"rrhh@finanzasdelvalle.co", vacantesActivas:2, estudiantesVinculados:2, postulacionesRecibidas:11, estado:"Activa"},
+  {id:"e5", nombre:"Mercadeo Creativo Ltda", sector:"Marketing y publicidad", contacto:"talento@mercadeocreativo.co", vacantesActivas:1, estudiantesVinculados:1, postulacionesRecibidas:9, estado:"Activa"},
+  {id:"e6", nombre:"Andina Software House", sector:"Desarrollo de software", contacto:"hr@andinasoftware.io", vacantesActivas:2, estudiantesVinculados:0, postulacionesRecibidas:6, estado:"Pendiente de aprobación"},
+  {id:"e7", nombre:"Logística Integral S.A.", sector:"Logística y transporte", contacto:"contacto@logisticaintegral.co", vacantesActivas:1, estudiantesVinculados:1, postulacionesRecibidas:5, estado:"Activa"},
+  {id:"e8", nombre:"InnovaTech Labs", sector:"Desarrollo de software", contacto:"info@innovatechlabs.co", vacantesActivas:0, estudiantesVinculados:0, postulacionesRecibidas:0, estado:"Inactiva"},
+];
+
+const VACANTES = [
+  {id:"v1", cargo:"Desarrollador Junior", empresaId:"e1", modalidad:"Híbrida", ciudad:"Medellín", tipo:"Práctica profesional", area:"Tecnología", programa:"Tecnología en Desarrollo de Software", vacantesNum:2,
+    descripcion:"Apoyar al equipo de desarrollo en la construcción y mantenimiento de aplicaciones web internas, bajo el acompañamiento de un desarrollador senior.",
+    responsabilidades:["Desarrollar componentes bajo estándares del equipo","Corregir incidencias reportadas en ambiente de pruebas","Documentar el código y los cambios realizados","Participar en reuniones diarias de seguimiento"],
+    requisitos:["Cursando 5° semestre en adelante","Conocimientos básicos de programación web","Disponibilidad de 4 a 6 horas diarias"],
+    habilidades:["JavaScript","Git","Trabajo en equipo"], fechaPublicacion:"2026-08-10", fechaLimite:"2026-09-20"},
+  {id:"v2", cargo:"Analista de Datos", empresaId:"e2", modalidad:"Presencial", ciudad:"Medellín", tipo:"Práctica profesional", area:"Datos y Analítica", programa:"Tecnología en Desarrollo de Software", vacantesNum:1,
+    descripcion:"Apoyar la construcción de reportes y tableros de indicadores para las áreas comercial y de operaciones.",
+    responsabilidades:["Consolidar y limpiar bases de datos","Construir tableros en herramientas de visualización","Apoyar el análisis de indicadores mensuales"],
+    requisitos:["Cursando 6° semestre en adelante","Manejo intermedio de Excel","Conocimientos básicos de SQL"],
+    habilidades:["SQL","Excel avanzado","Power BI"], fechaPublicacion:"2026-08-05", fechaLimite:"2026-09-15"},
+  {id:"v3", cargo:"Auxiliar Administrativo", empresaId:"e3", modalidad:"Presencial", ciudad:"Bello", tipo:"Práctica profesional", area:"Administrativa", programa:"Administración de Empresas", vacantesNum:2,
+    descripcion:"Brindar apoyo en labores administrativas y de gestión documental del área de operaciones.",
+    responsabilidades:["Organizar y archivar documentación","Apoyar la atención a proveedores internos","Elaborar informes administrativos básicos"],
+    requisitos:["Cursando 4° semestre en adelante","Manejo de herramientas ofimáticas","Buena redacción"],
+    habilidades:["Office","Organización","Atención al detalle"], fechaPublicacion:"2026-08-01", fechaLimite:"2026-09-10"},
+  {id:"v4", cargo:"Asistente Contable", empresaId:"e4", modalidad:"Presencial", ciudad:"Medellín", tipo:"Práctica profesional", area:"Finanzas", programa:"Administración de Empresas", vacantesNum:1,
+    descripcion:"Apoyar el registro de causaciones y la conciliación de cuentas del área contable.",
+    responsabilidades:["Apoyar el registro de facturas","Conciliar cuentas por pagar","Archivar soportes contables"],
+    requisitos:["Cursando 6° semestre en adelante","Conocimientos básicos de contabilidad"],
+    habilidades:["Contabilidad básica","Excel","Responsabilidad"], fechaPublicacion:"2026-08-12", fechaLimite:"2026-09-25"},
+  {id:"v5", cargo:"Practicante de Marketing Digital", empresaId:"e5", modalidad:"Remota", ciudad:"Medellín", tipo:"Práctica profesional", area:"Mercadeo", programa:"Administración de Empresas", vacantesNum:1,
+    descripcion:"Apoyar la planificación y publicación de contenido en canales digitales de la marca.",
+    responsabilidades:["Programar publicaciones en redes sociales","Apoyar campañas de correo","Medir el desempeño de publicaciones"],
+    requisitos:["Cursando 5° semestre en adelante","Interés en marketing digital"],
+    habilidades:["Redes sociales","Redacción","Canva"], fechaPublicacion:"2026-08-15", fechaLimite:"2026-09-30"},
+  {id:"v6", cargo:"Desarrollador Backend", empresaId:"e6", modalidad:"Híbrida", ciudad:"Envigado", tipo:"Práctica profesional", area:"Tecnología", programa:"Ingeniería de Software", vacantesNum:1,
+    descripcion:"Apoyar el desarrollo de servicios backend para una plataforma de gestión interna.",
+    responsabilidades:["Construir endpoints bajo especificación","Escribir pruebas unitarias básicas","Participar en revisiones de código"],
+    requisitos:["Cursando 7° semestre en adelante","Conocimientos de bases de datos relacionales"],
+    habilidades:["Node.js","SQL","APIs REST"], fechaPublicacion:"2026-08-03", fechaLimite:"2026-09-12"},
+  {id:"v7", cargo:"Soporte de Infraestructura TI", empresaId:"e1", modalidad:"Presencial", ciudad:"Medellín", tipo:"Práctica profesional", area:"Tecnología", programa:"Tecnología en Desarrollo de Software", vacantesNum:1,
+    descripcion:"Brindar soporte de primer nivel a los usuarios internos y apoyar el mantenimiento de equipos.",
+    responsabilidades:["Atender solicitudes de soporte técnico","Documentar incidencias","Apoyar el mantenimiento preventivo de equipos"],
+    requisitos:["Cursando 4° semestre en adelante","Conocimientos básicos de redes"],
+    habilidades:["Soporte técnico","Redes básicas","Atención al usuario"], fechaPublicacion:"2026-08-18", fechaLimite:"2026-09-28"},
+  {id:"v8", cargo:"Analista de Business Intelligence", empresaId:"e2", modalidad:"Híbrida", ciudad:"Medellín", tipo:"Práctica profesional", area:"Datos y Analítica", programa:"Tecnología en Gestión Empresarial", vacantesNum:1,
+    descripcion:"Apoyar la generación de reportes gerenciales y el mantenimiento de modelos de datos.",
+    responsabilidades:["Mantener modelos de datos existentes","Automatizar reportes recurrentes","Apoyar el control de calidad de la información"],
+    requisitos:["Cursando 6° semestre en adelante","Interés en analítica de datos"],
+    habilidades:["Power BI","SQL","Análisis de datos"], fechaPublicacion:"2026-08-08", fechaLimite:"2026-09-18"},
+  {id:"v9", cargo:"Auxiliar de Talento Humano", empresaId:"e3", modalidad:"Presencial", ciudad:"Bello", tipo:"Práctica profesional", area:"Administrativa", programa:"Administración de Empresas", vacantesNum:1,
+    descripcion:"Apoyar procesos de selección, bienestar y documentación del área de talento humano.",
+    responsabilidades:["Apoyar procesos de reclutamiento","Organizar hojas de vida de candidatos","Apoyar actividades de bienestar"],
+    requisitos:["Cursando 5° semestre en adelante","Habilidades de comunicación"],
+    habilidades:["Comunicación","Organización","Discreción"], fechaPublicacion:"2026-08-20", fechaLimite:"2026-10-01"},
+  {id:"v10", cargo:"Practicante de Diseño UX/UI", empresaId:"e6", modalidad:"Remota", ciudad:"Medellín", tipo:"Práctica profesional", area:"Tecnología", programa:"Tecnología en Desarrollo de Software", vacantesNum:1,
+    descripcion:"Apoyar el diseño de interfaces para productos digitales internos.",
+    responsabilidades:["Diseñar pantallas siguiendo el sistema de diseño","Apoyar pruebas de usabilidad básicas","Documentar componentes de interfaz"],
+    requisitos:["Cursando 5° semestre en adelante","Conocimientos básicos de herramientas de diseño"],
+    habilidades:["Figma","Diseño de interfaces","Atención al detalle"], fechaPublicacion:"2026-08-22", fechaLimite:"2026-10-05"},
+  {id:"v11", cargo:"Asistente de Logística", empresaId:"e7", modalidad:"Presencial", ciudad:"Itagüí", tipo:"Práctica profesional", area:"Administrativa", programa:"Tecnología en Gestión Empresarial", vacantesNum:1,
+    descripcion:"Apoyar la coordinación de rutas de despacho y el control de inventario.",
+    responsabilidades:["Apoyar el control de inventario","Coordinar despachos con transportadores","Elaborar reportes de cumplimiento"],
+    requisitos:["Cursando 5° semestre en adelante","Disponibilidad de tiempo completo"],
+    habilidades:["Excel","Organización","Trabajo bajo presión"], fechaPublicacion:"2026-08-06", fechaLimite:"2026-09-16"},
+  {id:"v12", cargo:"Analista Financiero Junior", empresaId:"e4", modalidad:"Híbrida", ciudad:"Medellín", tipo:"Práctica profesional", area:"Finanzas", programa:"Administración de Empresas", vacantesNum:1,
+    descripcion:"Apoyar el análisis de flujo de caja y la elaboración de reportes financieros básicos.",
+    responsabilidades:["Apoyar la elaboración de reportes de flujo de caja","Consolidar información financiera","Apoyar el cierre mensual"],
+    requisitos:["Cursando 7° semestre en adelante","Conocimientos de finanzas básicas"],
+    habilidades:["Excel avanzado","Finanzas básicas","Análisis numérico"], fechaPublicacion:"2026-08-14", fechaLimite:"2026-09-24"},
+];
+
+const ESTUDIANTES = [
+  {id:"s1", nombre:"Camilo Moya", programa:"Tecnología en Desarrollo de Software", semestre:6, estadoAcademico:"Activo", estadoPractica:"En práctica", empresa:"Tech Solutions Colombia", horasCompletadas:320, horasRequeridas:640, documentacion:"En trámite"},
+  {id:"s2", nombre:"Valentina Restrepo", programa:"Administración de Empresas", semestre:7, estadoAcademico:"Activo", estadoPractica:"En práctica", empresa:"Grupo Empresarial Antioquia", horasCompletadas:410, horasRequeridas:480, documentacion:"Completa"},
+  {id:"s3", nombre:"Juan David Osorio", programa:"Ingeniería de Software", semestre:8, estadoAcademico:"Activo", estadoPractica:"En práctica", empresa:"Andina Software House", horasCompletadas:180, horasRequeridas:640, documentacion:"En trámite"},
+  {id:"s4", nombre:"Mariana Zuluaga", programa:"Tecnología en Gestión Empresarial", semestre:6, estadoAcademico:"Activo", estadoPractica:"Finalizada", empresa:"DataNova", horasCompletadas:480, horasRequeridas:480, documentacion:"Completa"},
+  {id:"s5", nombre:"Santiago Gómez", programa:"Tecnología en Desarrollo de Software", semestre:5, estadoAcademico:"Activo", estadoPractica:"Sin práctica", empresa:"—", horasCompletadas:0, horasRequeridas:0, documentacion:"Pendiente"},
+  {id:"s6", nombre:"Isabella Cardona", programa:"Administración de Empresas", semestre:7, estadoAcademico:"Activo", estadoPractica:"En proceso de vinculación", empresa:"Finanzas del Valle S.A.S", horasCompletadas:0, horasRequeridas:480, documentacion:"En trámite"},
+  {id:"s7", nombre:"Andrés Felipe Jaramillo", programa:"Ingeniería de Software", semestre:7, estadoAcademico:"Activo", estadoPractica:"En práctica", empresa:"Tech Solutions Colombia", horasCompletadas:260, horasRequeridas:640, documentacion:"Completa"},
+  {id:"s8", nombre:"Laura Sofía Vélez", programa:"Tecnología en Desarrollo de Software", semestre:6, estadoAcademico:"Activo", estadoPractica:"Sin práctica", empresa:"—", horasCompletadas:0, horasRequeridas:0, documentacion:"Pendiente"},
+  {id:"s9", nombre:"Daniel Ospina", programa:"Tecnología en Gestión Empresarial", semestre:8, estadoAcademico:"Activo", estadoPractica:"Finalizada", empresa:"Logística Integral S.A.", horasCompletadas:480, horasRequeridas:480, documentacion:"Completa"},
+  {id:"s10", nombre:"Camila Andrea Ríos", programa:"Administración de Empresas", semestre:6, estadoAcademico:"Activo", estadoPractica:"En práctica", empresa:"Mercadeo Creativo Ltda", horasCompletadas:150, horasRequeridas:480, documentacion:"En trámite"},
+  {id:"s11", nombre:"Esteban Correa", programa:"Ingeniería de Software", semestre:6, estadoAcademico:"Activo", estadoPractica:"Sin práctica", empresa:"—", horasCompletadas:0, horasRequeridas:0, documentacion:"Pendiente"},
+  {id:"s12", nombre:"Manuela Betancur", programa:"Tecnología en Desarrollo de Software", semestre:7, estadoAcademico:"Activo", estadoPractica:"En práctica", empresa:"DataNova", horasCompletadas:300, horasRequeridas:640, documentacion:"Completa"},
+  {id:"s13", nombre:"Nicolás Arango", programa:"Administración de Empresas", semestre:5, estadoAcademico:"Activo", estadoPractica:"Sin práctica", empresa:"—", horasCompletadas:0, horasRequeridas:0, documentacion:"Pendiente"},
+  {id:"s14", nombre:"Sara Montoya", programa:"Tecnología en Gestión Empresarial", semestre:7, estadoAcademico:"Activo", estadoPractica:"En proceso de vinculación", empresa:"Grupo Empresarial Antioquia", horasCompletadas:0, horasRequeridas:480, documentacion:"En trámite"},
+  {id:"s15", nombre:"Tomás Higuita", programa:"Ingeniería de Software", semestre:9, estadoAcademico:"Activo", estadoPractica:"Finalizada", empresa:"Tech Solutions Colombia", horasCompletadas:640, horasRequeridas:640, documentacion:"Completa"},
+];
+
+let APLICACIONES = [
+  {id:"a1", vacanteId:"v1", estudianteId:"s1", fecha:"2026-08-15", estado:"Seleccionado"},
+  {id:"a2", vacanteId:"v2", estudianteId:"s1", fecha:"2026-08-25", estado:"Preseleccionado"},
+  {id:"a3", vacanteId:"v3", estudianteId:"s1", fecha:"2026-08-20", estado:"No seleccionado"},
+  {id:"a4", vacanteId:"v7", estudianteId:"s1", fecha:"2026-08-28", estado:"En revisión"},
+  {id:"a5", vacanteId:"v1", estudianteId:"s2", fecha:"2026-08-11", estado:"No seleccionado"},
+  {id:"a6", vacanteId:"v1", estudianteId:"s3", fecha:"2026-08-12", estado:"Postulado"},
+  {id:"a7", vacanteId:"v2", estudianteId:"s12", fecha:"2026-08-06", estado:"Seleccionado"},
+  {id:"a8", vacanteId:"v6", estudianteId:"s3", fecha:"2026-08-14", estado:"Preseleccionado"},
+];
+let appCounter = 9;
+
+const DOCUMENTOS_PRACTICA = [
+  {nombre:"Hoja de vida", estado:"Entregado"},
+  {nombre:"Carta de presentación", estado:"Entregado"},
+  {nombre:"Convenio", estado:"Aprobado"},
+  {nombre:"ARL", estado:"Pendiente"},
+  {nombre:"Carta de inicio", estado:"Pendiente"},
+];
+
+const PROXIMAS_FECHAS = [
+  {fecha:"15 oct. 2026", evento:"Entrega de informe parcial de práctica"},
+  {fecha:"30 nov. 2026", evento:"Visita de seguimiento del tutor universitario"},
+  {fecha:"20 feb. 2027", evento:"Entrega de informe final de práctica"},
+];
+
+const PRACTICA_ACTUAL = {
+  empresa:"Tech Solutions Colombia", cargo:"Desarrollador Junior",
+  fechaInicio:"01/09/2026", fechaFin:"28/02/2027",
+  horasRequeridas:640, horasCompletadas:320,
+  estado:"En curso",
+  tutorEmpresarial:"Laura Restrepo — Líder de Desarrollo",
+  tutorUniversitario:"Prof. Julián Cárdenas — Coordinador de Prácticas",
+};
+
+const KPIS_UNIVERSIDAD = { enPractica:86, empresasAliadas:24, vacantesActivas:18, postulacionesMes:42, proximasFinalizar:12 };
+const ESTUDIANTES_POR_PROGRAMA = [
+  {label:"Tecnología en Desarrollo de Software", valor:32},
+  {label:"Administración de Empresas", valor:24},
+  {label:"Tecnología en Gestión Empresarial", valor:18},
+  {label:"Ingeniería de Software", valor:12},
+];
+const VACANTES_POR_AREA = [
+  {label:"Tecnología", valor:7}, {label:"Administración", valor:4},
+  {label:"Datos y Analítica", valor:3}, {label:"Finanzas", valor:2}, {label:"Mercadeo", valor:2},
+];
+const ESTADO_PRACTICAS = [
+  {label:"Activas", valor:86, color:"var(--navy-800)"},
+  {label:"Finalizadas", valor:34, color:"var(--success)"},
+  {label:"En proceso de vinculación", valor:15, color:"var(--gold-600)"},
+  {label:"Pendientes", valor:9, color:"var(--text-faint)"},
+];
+
+const FASES = [
+  {t:"Fase 1", d:"Portal básico de prácticas y empleabilidad."},
+  {t:"Fase 2", d:"Gestión completa de convenios y documentos."},
+  {t:"Fase 3", d:"Notificaciones y comunicación entre actores."},
+  {t:"Fase 4", d:"Integración con sistemas académicos de IUBello."},
+  {t:"Fase 5", d:"Analítica avanzada e indicadores institucionales."},
+  {t:"Fase 6", d:"Posible incorporación de inteligencia artificial para recomendar oportunidades a estudiantes según su perfil."},
+];
+
+/* ---------- ESTADO GLOBAL ---------- */
+const state = {
+  screen: "landing",   // 'landing' | 'login' | 'app'
+  currentUser: null,   // {role:'estudiante'|'empresa'|'universidad', name, email}
+  view: null,
+  vacFilters: {q:"", area:"", modalidad:"", ciudad:"", programa:""},
+  studentFilters: {q:"", programa:"", estado:""},
+  companySelectedForApplicants: "e1",
+  openVacancyId: null,
+  modal: null, // {type:'vacancy'|'publish'|'company'|'student', id}
+  sidebarOpen: false,
+};
+
+/* ---------- Línea de tiempo de "Mi práctica" ---------- */
+const PRACTICA_TIMELINE = [
+  {nombre:"Postulación", estado:"Completada", fecha:"15 de agosto de 2026", tono:"done"},
+  {nombre:"Proceso de selección", estado:"Completada", fecha:"25 de agosto de 2026", tono:"done"},
+  {nombre:"Documentación", estado:"Completada", fecha:"30 de agosto de 2026", tono:"done"},
+  {nombre:"Práctica en curso", estado:"Estado actual", fecha:"Inicio: 1 de septiembre de 2026", tono:"current"},
+  {nombre:"Finalización", estado:"Pendiente", fecha:"Fecha estimada: 28 de febrero de 2027", tono:"pending"},
+];
+
+/* ---------- Horas por mes (suman las horas completadas) ---------- */
+const HORAS_POR_MES = [
+  {label:"Sep", valor:120}, {label:"Oct", valor:110}, {label:"Nov", valor:90},
+];
+
+/* ---------- Evolución de postulaciones (últimos 6 meses) ---------- */
+const EVOLUCION_POSTULACIONES = [
+  {label:"Abr", valor:24}, {label:"May", valor:29}, {label:"Jun", valor:33},
+  {label:"Jul", valor:30}, {label:"Ago", valor:38}, {label:"Sep", valor:42},
+];
+
+const ROLE_LABELS = { estudiante:"Estudiante", empresa:"Empresa", universidad:"Universidad" };
+
+const NAV_ITEMS = {
+  estudiante: [
+    {id:"inicio", label:"Inicio", icon:"home"},
+    {id:"oportunidades", label:"Oportunidades", icon:"briefcase"},
+    {id:"postulaciones", label:"Mis postulaciones", icon:"list"},
+    {id:"practica", label:"Mi práctica", icon:"progress"},
+    {id:"documentos", label:"Documentos", icon:"folder"},
+    {id:"perfil", label:"Mi perfil", icon:"user"},
+  ],
+  empresa: [
+    {id:"inicio", label:"Inicio", icon:"home"},
+    {id:"vacantes", label:"Mis vacantes", icon:"briefcase"},
+    {id:"postulantes", label:"Postulantes", icon:"candidates"},
+    {id:"practicantes", label:"Practicantes", icon:"progress"},
+    {id:"perfil", label:"Perfil de empresa", icon:"building"},
+  ],
+  universidad: [
+    {id:"dashboard", label:"Dashboard", icon:"grid"},
+    {id:"estudiantes", label:"Estudiantes", icon:"user"},
+    {id:"empresas", label:"Empresas", icon:"building"},
+    {id:"vacantes", label:"Vacantes", icon:"briefcase"},
+    {id:"practicas", label:"Prácticas", icon:"progress"},
+    {id:"documentos", label:"Documentos", icon:"folder"},
+    {id:"reportes", label:"Reportes", icon:"report"},
+  ],
+};
+
+/* ---------- HELPERS ---------- */
+function findEmpresa(id){ return EMPRESAS.find(e=>e.id===id); }
+function findVacante(id){ return VACANTES.find(v=>v.id===id); }
+function findEstudiante(id){ return ESTUDIANTES.find(s=>s.id===id); }
+function fmtDate(iso){
+  const d = new Date(iso+"T00:00:00");
+  const meses = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
+  return d.getDate()+" "+meses[d.getMonth()]+". "+d.getFullYear();
+}
+function initials(name){ return name.split(" ").filter(Boolean).slice(0,2).map(w=>w[0]).join("").toUpperCase(); }
+function escapeHtml(str){ return String(str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
+
+function estadoPostulacionBadge(estado){
+  const map = {
+    "Postulado": "badge-info",
+    "En revisión": "badge-warning",
+    "Preseleccionado": "badge-gold",
+    "Seleccionado": "badge-success",
+    "No seleccionado": "badge-danger",
+  };
+  return '<span class="badge '+(map[estado]||"badge-neutral")+'"><span class="badge-dot"></span>'+estado+'</span>';
+}
+function estadoPracticaBadge(estado){
+  const map = {
+    "En práctica": "badge-success",
+    "Finalizada": "badge-neutral",
+    "Sin práctica": "badge-warning",
+    "En proceso de vinculación": "badge-gold",
+  };
+  return '<span class="badge '+(map[estado]||"badge-neutral")+'"><span class="badge-dot"></span>'+estado+'</span>';
+}
+function estadoEmpresaBadge(estado){
+  const map = { "Activa":"badge-success", "Pendiente de aprobación":"badge-warning", "Inactiva":"badge-danger" };
+  return '<span class="badge '+(map[estado]||"badge-neutral")+'"><span class="badge-dot"></span>'+estado+'</span>';
+}
+function docEstadoBadge(estado){
+  const map = { "Entregado":"badge-info", "Aprobado":"badge-success", "Pendiente":"badge-warning" };
+  return '<span class="badge '+(map[estado]||"badge-neutral")+'"><span class="badge-dot"></span>'+estado+'</span>';
+}
+
+function misPostulaciones(){
+  return APLICACIONES.filter(a=>a.estudianteId==="s1").sort((a,b)=> new Date(b.fecha)-new Date(a.fecha));
+}
+function yaPostulado(vacId){
+  return APLICACIONES.some(a=>a.vacanteId===vacId && a.estudianteId==="s1");
+}
+
+let toastTimer = null;
+function showToast(msg){
+  const el = document.getElementById("toast-host");
+  if(!el) return;
+  el.innerHTML = '<div class="toast"><span class="dot"></span>'+msg+'</div>';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ el.innerHTML = ""; }, 3200);
+}
+
+/* ---------- NAVEGACIÓN LANDING / LOGIN ---------- */
+function goToLogin(){ state.screen = "login"; render(); window.scrollTo(0,0); }
+function backToLanding(){ state.screen = "landing"; loginError = ""; render(); window.scrollTo(0,0); }
+function scrollToSection(id){
+  state.screen = "landing";
+  render();
+  requestAnimationFrame(()=>{
+    const el = document.getElementById(id);
+    if(el) el.scrollIntoView({behavior:"smooth", block:"start"});
+  });
+}
+
+/* ---------- LANDING PAGE ---------- */
+function renderLanding(){
+  return `
+  <div class="landing-page">
+    <nav class="landing-nav">
+      <div class="landing-nav-brand">
+        <div class="landing-nav-mark">${brandMark(18)}</div>
+        <b>IUBello Talento</b>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="goToLogin()">Acceder a la demostración</button>
+    </nav>
+
+    <header class="landing-hero">
+      <div class="landing-hero-inner">
+        <span class="landing-eyebrow">${brandMark(14)} Prototipo conceptual — Propuesta académica</span>
+        <h1>IUBello Talento</h1>
+        <div class="tagline">Plataforma de Prácticas Profesionales y Empleabilidad</div>
+        <p class="desc" style="color:rgba(255,255,255,0.85); font-family:var(--font-display); font-style:italic; margin-top:20px;">Conectamos <span class="accent">estudiantes</span>, empresas y universidad en un solo lugar.</p>
+        <p class="desc">Una propuesta tecnológica para centralizar oportunidades de práctica profesional, procesos de postulación y seguimiento institucional.</p>
+        <div class="landing-cta-row">
+          <button class="btn btn-gold" onclick="scrollToSection('landing-reto')">Explorar la propuesta</button>
+          <button class="btn btn-outline" style="background:transparent; color:#fff; border-color:rgba(255,255,255,0.35);" onclick="goToLogin()">Acceder a la demostración ${icon("arrowRight")}</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="landing-section" id="landing-reto">
+      <div class="landing-section-inner">
+        <div class="landing-kicker">El reto</div>
+        <h2>A medida que una institución crece, la gestión de prácticas puede volverse más difícil de coordinar.</h2>
+        <p class="lead">Correos, archivos compartidos, hojas de cálculo y comunicación dispersa entre distintos actores pueden dificultar tener una visión completa y actualizada del proceso de prácticas profesionales.</p>
+        <div class="tag-list" style="margin-top:24px;">
+          ${["Correos", "Archivos", "Documentos", "Hojas de cálculo", "Comunicación entre actores", "Seguimiento manual"].map(t=>`<span class="vac-tag">${t}</span>`).join("")}
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-section alt">
+      <div class="landing-section-inner">
+        <div class="landing-kicker">La propuesta</div>
+        <h2>Un solo lugar que centraliza la relación entre los tres actores del proceso.</h2>
+        <div class="flow-diagram">
+          <div class="flow-col">
+            <div class="flow-node"><b>Estudiantes</b><span>Buscan y aplican</span></div>
+          </div>
+          <div class="flow-arrow">${icon("arrowRight")}</div>
+          <div class="flow-node center"><b>IUBello Talento</b><span>Centraliza el proceso</span></div>
+          <div class="flow-arrow">${icon("arrowRight")}</div>
+          <div class="flow-col">
+            <div class="flow-node"><b>Empresas</b><span>Publican y seleccionan</span></div>
+          </div>
+        </div>
+        <div style="text-align:center; margin-top:14px;">
+          <div class="flow-arrow" style="display:inline-block; transform:rotate(90deg);">${icon("arrowRight")}</div>
+        </div>
+        <div style="display:flex; justify-content:center;">
+          <div class="flow-node"><b>Universidad</b><span>Supervisa y da seguimiento</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-section" id="landing-como-funciona">
+      <div class="landing-section-inner">
+        <div class="landing-kicker">Cómo funciona</div>
+        <h2>Tres pasos conectan a toda la comunidad de prácticas.</h2>
+        <div class="step-row">
+          <div class="step-card"><div class="step-connector"></div><div class="step-num">1</div><h3>Las empresas publican oportunidades</h3><p>Registran vacantes de práctica con sus requisitos y condiciones.</p></div>
+          <div class="step-card"><div class="step-connector"></div><div class="step-num">2</div><h3>Los estudiantes encuentran y aplican</h3><p>Buscan, filtran y se postulan a las oportunidades disponibles.</p></div>
+          <div class="step-card"><div class="step-num">3</div><h3>La universidad realiza seguimiento</h3><p>Supervisa el proceso, las horas y la documentación de cada práctica.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-section alt" id="landing-beneficios">
+      <div class="landing-section-inner">
+        <div class="landing-kicker">Beneficios</div>
+        <h2>Qué gana cada actor del proceso.</h2>
+        <div class="benefit-grid">
+          <div class="benefit-card">
+            <div class="benefit-icon">${icon("user")}</div>
+            <h3>Para estudiantes</h3>
+            <ul>
+              <li>Consultar oportunidades</li>
+              <li>Realizar postulaciones</li>
+              <li>Consultar el estado de los procesos</li>
+              <li>Seguimiento de la práctica</li>
+              <li>Consultar documentos pendientes</li>
+            </ul>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">${icon("building")}</div>
+            <h3>Para empresas</h3>
+            <ul>
+              <li>Publicar oportunidades</li>
+              <li>Consultar postulantes</li>
+              <li>Identificar talento</li>
+              <li>Seguimiento de practicantes</li>
+            </ul>
+          </div>
+          <div class="benefit-card">
+            <div class="benefit-icon">${icon("grid")}</div>
+            <h3>Para la universidad</h3>
+            <ul>
+              <li>Centralizar información</li>
+              <li>Seguimiento de prácticas</li>
+              <li>Consultar indicadores</li>
+              <li>Visualizar empresas aliadas</li>
+              <li>Identificar procesos pendientes</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-section" id="landing-impacto">
+      <div class="landing-section-inner">
+        <div class="landing-kicker">Impacto institucional</div>
+        <h2>Una plataforma preparada para crecer</h2>
+        <p class="lead">Algunos beneficios que podría aportar a una institución universitaria en crecimiento:</p>
+        <div class="impact-grid">
+          ${[
+            "Podría facilitar la centralización de la información del proceso.",
+            "Permitirá evaluar la posibilidad de un mejor seguimiento de los procesos.",
+            "Puede convertirse en una base para dar mayor visibilidad a las oportunidades.",
+            "Podría facilitar tener información disponible para indicadores institucionales.",
+            "Permitirá evaluar la posibilidad de una mejor experiencia para los estudiantes.",
+            "Puede convertirse en una base para fortalecer la conexión entre universidad y empresas.",
+          ].map(t=>`<div class="impact-item"><span class="dot"></span><p>${t}</p></div>`).join("")}
+        </div>
+      </div>
+    </section>
+
+    <section class="landing-section alt" id="landing-futuro">
+      <div class="landing-section-inner">
+        <div class="landing-kicker">Posibles futuras evoluciones</div>
+        <h2>El prototipo podría evolucionar por fases</h2>
+        <div class="future-grid">
+          <div class="future-item"><h4>Integración académica</h4><p>Conexión con sistemas institucionales.</p></div>
+          <div class="future-item"><h4>Gestión documental</h4><p>Seguimiento más completo de documentos.</p></div>
+          <div class="future-item"><h4>Notificaciones</h4><p>Recordatorios de fechas y procesos.</p></div>
+          <div class="future-item"><h4>Analítica</h4><p>Indicadores institucionales avanzados.</p></div>
+          <div class="future-item"><h4>Recomendaciones inteligentes</h4><p>Sugerencias de oportunidades según el perfil académico.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="landing-footer">
+      <h2>Explora la demostración</h2>
+      <p>Recorre el prototipo como estudiante, empresa o universidad y descubre cómo se vería esta propuesta en funcionamiento.</p>
+      <button class="btn btn-gold" onclick="goToLogin()">Acceder a la demostración</button>
+      <div class="fineprint">IUBello Talento — Prototipo conceptual · Propuesta académica · Información utilizada únicamente con fines demostrativos.</div>
+    </footer>
+  </div>`;
+}
+
+/* ---------- LOGIN ---------- */
+let loginError = "";
+const DEMO_USERS = {
+  "estudiante@demo.com": {role:"estudiante", name:"Camilo Moya"},
+  "empresa@demo.com": {role:"empresa", name:"Tech Solutions Colombia"},
+  "admin@demo.com": {role:"universidad", name:"Coordinación de Prácticas"},
+};
+
+function renderLogin(){
+  return `
+  <div class="login-wrap">
+    <div class="login-visual">
+      <div class="login-brand">
+        <div class="login-mark">${brandMark(24)}</div>
+        <div>
+          <div class="login-brand-name">IUBello Talento</div>
+          <div class="login-brand-sub">Institución Universitaria Pública de Bello</div>
+        </div>
+      </div>
+      <div class="login-hero">
+        <h1>Conectamos <span class="accent">talento</span>, universidad y empresas.</h1>
+        <p>Un solo lugar para gestionar convenios, vacantes, postulaciones y el seguimiento de las prácticas profesionales de IUBello.</p>
+        <div class="login-flow">
+          <div class="login-flow-step"><div class="n">Empresa</div><div class="t">Publica una oportunidad</div></div>
+          <div class="login-flow-step"><div class="n">Estudiante</div><div class="t">Se postula</div></div>
+          <div class="login-flow-step"><div class="n">Universidad</div><div class="t">Supervisa el proceso</div></div>
+          <div class="login-flow-step"><div class="n">Práctica</div><div class="t">Se formaliza y da seguimiento</div></div>
+        </div>
+      </div>
+      <div class="login-foot">Prototipo conceptual — Propuesta académica · Datos de demostración</div>
+    </div>
+    <div class="login-panel">
+      <div class="login-card">
+        <button class="btn btn-ghost btn-sm" style="margin-bottom:18px; padding-left:4px;" onclick="backToLanding()">${icon("arrowRight", "rotate-180")} Volver a la propuesta</button>
+        <div class="login-card-head">
+          <h2>Iniciar sesión</h2>
+          <p>Ingresa con tu cuenta institucional o elige un rol de demostración.</p>
+        </div>
+        ${loginError ? `<div class="login-error">${loginError}</div>` : ""}
+        <form onsubmit="return handleManualLogin(event)">
+          <div class="field">
+            <label>Correo institucional</label>
+            <input type="email" id="login-email" placeholder="nombre@iubello.edu.co" required>
+          </div>
+          <div class="field">
+            <label>Contraseña</label>
+            <input type="password" id="login-password" placeholder="••••••••" required>
+          </div>
+          <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+        </form>
+        <div class="login-divider">o entra con un usuario de demostración</div>
+        <div class="demo-roles">
+          <button class="demo-role-btn" onclick="loginAsRole('estudiante')">
+            <div class="demo-role-icon">${icon("user")}</div>
+            <div class="demo-role-text"><b>Estudiante</b><span>estudiante@demo.com — Camilo Moya</span></div>
+          </button>
+          <button class="demo-role-btn" onclick="loginAsRole('empresa')">
+            <div class="demo-role-icon">${icon("building")}</div>
+            <div class="demo-role-text"><b>Empresa</b><span>empresa@demo.com — Tech Solutions Colombia</span></div>
+          </button>
+          <button class="demo-role-btn" onclick="loginAsRole('universidad')">
+            <div class="demo-role-icon">${icon("grid")}</div>
+            <div class="demo-role-text"><b>Universidad</b><span>admin@demo.com — Coordinación de Prácticas</span></div>
+          </button>
+        </div>
+        <p class="faint" style="margin-top:20px; text-align:center;">Prototipo conceptual — Propuesta académica</p>
+      </div>
+    </div>
+  </div>`;
+}
+
+function handleManualLogin(ev){
+  ev.preventDefault();
+  const email = document.getElementById("login-email").value.trim().toLowerCase();
+  const user = DEMO_USERS[email];
+  if(user){
+    loginError = "";
+    state.currentUser = { role:user.role, name:user.name, email };
+    state.view = NAV_ITEMS[user.role][0].id;
+    state.screen = "app";
+    render();
+  } else {
+    loginError = "No encontramos una cuenta con ese correo. Usa uno de los usuarios de demostración.";
+    render();
+  }
+  return false;
+}
+
+function loginAsRole(role){
+  const entry = Object.entries(DEMO_USERS).find(([,u])=>u.role===role);
+  loginError = "";
+  state.currentUser = { role, name:entry[1].name, email:entry[0] };
+  state.view = NAV_ITEMS[role][0].id;
+  state.screen = "app";
+  render();
+}
+
+function logout(){
+  state.currentUser = null;
+  state.view = null;
+  state.modal = null;
+  state.screen = "landing";
+  render();
+}
+
+function switchDemoRole(role){
+  const entry = Object.entries(DEMO_USERS).find(([,u])=>u.role===role);
+  state.currentUser = { role, name:entry[1].name, email:entry[0] };
+  state.view = NAV_ITEMS[role][0].id;
+  state.modal = null;
+  state.sidebarOpen = false;
+  render();
+  showToast("Modo demostración — ahora estás viendo el portal de "+ROLE_LABELS[role].toLowerCase());
+}
+
+/* ---------- SHELL (sidebar + topbar) ---------- */
+function setView(view){
+  state.view = view;
+  state.modal = null;
+  state.sidebarOpen = false;
+  render();
+  const c = document.querySelector(".content");
+  if(c) c.scrollTop = 0;
+}
+function toggleSidebar(){ state.sidebarOpen = !state.sidebarOpen; render(); }
+function closeSidebar(){ state.sidebarOpen = false; render(); }
+
+const VIEW_TITLES = {
+  inicio:{t:"Inicio", d:null},
+  oportunidades:{t:"Oportunidades", d:"Explora y postúlate a prácticas profesionales disponibles"},
+  postulaciones:{t:"Mis postulaciones", d:"Seguimiento de tus procesos de postulación"},
+  practica:{t:"Mi práctica", d:"Seguimiento de tu práctica profesional en curso"},
+  documentos:{t:"Documentos", d:"Estado de los documentos de tu proceso"},
+  perfil:{t:"Mi perfil", d:null},
+  vacantes:{t:"Mis vacantes", d:"Gestiona las oportunidades publicadas por tu empresa"},
+  postulantes:{t:"Postulantes", d:"Revisa y gestiona los candidatos a tus vacantes"},
+  practicantes:{t:"Practicantes", d:"Estudiantes actualmente vinculados a tu empresa"},
+  dashboard:{t:"Panel de Prácticas Profesionales", d:"Indicadores generales del proceso de prácticas"},
+  estudiantes:{t:"Estudiantes", d:"Consulta el estado académico y de práctica de los estudiantes"},
+  empresas:{t:"Empresas aliadas", d:"Convenios y vinculación con el sector empresarial"},
+  practicas:{t:"Prácticas", d:"Seguimiento de las prácticas profesionales activas"},
+  reportes:{t:"Reportes", d:"Evolución de la plataforma y próximas fases"},
+};
+
+function demoSwitcher(){
+  const role = state.currentUser.role;
+  return `
+  <div class="demo-switch">
+    <span class="demo-switch-label">Modo demostración</span>
+    <div class="demo-switch-group">
+      ${["estudiante","empresa","universidad"].map(r=>`
+        <button class="${role===r?"active":""}" onclick="switchDemoRole('${r}')">${ROLE_LABELS[r]}</button>
+      `).join("")}
+    </div>
+  </div>`;
+}
+
+function renderShell(){
+  const role = state.currentUser.role;
+  const items = NAV_ITEMS[role];
+  const titleInfo = VIEW_TITLES[state.view] || {t:"", d:null};
+  return `
+  <div class="shell">
+    <div class="sidebar-backdrop ${state.sidebarOpen?"open":""}" onclick="closeSidebar()"></div>
+    <aside class="sidebar ${state.sidebarOpen?"open":""}">
+      <div class="sb-brand">
+        <div class="sb-mark">${brandMark(19)}</div>
+        <div class="sb-brand-text"><b>IUBello Talento</b><span>Propuesta académica</span></div>
+      </div>
+      <div class="sb-role-tag">${ROLE_LABELS[role].toUpperCase()}<span> · Portal</span></div>
+      <ul class="nav-list">
+        ${items.map(it=>`
+          <li class="nav-item ${state.view===it.id?"active":""}">
+            <button onclick="setView('${it.id}')" title="${it.label}">
+              <span class="nav-icon">${icon(it.icon)}</span>
+              <span class="nav-label">${it.label}</span>
+            </button>
+          </li>`).join("")}
+      </ul>
+      <div class="sb-foot">
+        <div class="sb-user">
+          <div class="sb-avatar">${initials(state.currentUser.name)}</div>
+          <div class="sb-user-text nav-label"><b>${state.currentUser.name}</b><span>${ROLE_LABELS[role]}</span></div>
+        </div>
+        <button class="sb-logout" onclick="logout()">${icon("logout")}<span class="nav-label">Cerrar sesión</span></button>
+        <p class="faint nav-label" style="margin-top:12px; line-height:1.5;">Información utilizada únicamente con fines demostrativos.</p>
+      </div>
+    </aside>
+    <div class="main">
+      <div class="topbar">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <button class="menu-toggle" onclick="toggleSidebar()" aria-label="Abrir menú">${icon("list")}</button>
+          <div>
+            <h1>${titleInfo.t}</h1>
+            ${titleInfo.d? `<div class="topbar-sub">${titleInfo.d}</div>` : ""}
+          </div>
+        </div>
+        ${demoSwitcher()}
+      </div>
+      <div class="content scroll-fade" id="content-area">
+        ${renderViewContent()}
+      </div>
+    </div>
+  </div>
+  ${renderModal()}
+  <div id="toast-host"></div>
+  `;
+}
+
+function renderViewContent(){
+  const role = state.currentUser.role;
+  const v = state.view;
+  if(role==="estudiante"){
+    if(v==="inicio") return viewStudentHome();
+    if(v==="oportunidades") return viewOpportunities();
+    if(v==="postulaciones") return viewMyApplications();
+    if(v==="practica") return viewMyPractice();
+    if(v==="documentos") return viewMyDocuments();
+    if(v==="perfil") return viewStudentProfile();
+  }
+  if(role==="empresa"){
+    if(v==="inicio") return viewCompanyHome();
+    if(v==="vacantes") return viewCompanyVacancies();
+    if(v==="postulantes") return viewCompanyApplicants();
+    if(v==="practicantes") return viewCompanyInterns();
+    if(v==="perfil") return viewCompanyProfile();
+  }
+  if(role==="universidad"){
+    if(v==="dashboard") return viewUniDashboard();
+    if(v==="estudiantes") return viewUniStudents();
+    if(v==="empresas") return viewUniCompanies();
+    if(v==="vacantes") return viewUniVacancies();
+    if(v==="practicas") return viewUniPractices();
+    if(v==="documentos") return viewUniDocuments();
+    if(v==="reportes") return viewUniReports();
+  }
+  return `<div class="empty-state"><h3>Sección no disponible</h3></div>`;
+}
+
+/* ======================================================================
+   VISTAS — ESTUDIANTE
+   ====================================================================== */
+function viewStudentHome(){
+  const misApps = misPostulaciones();
+  const activas = misApps.filter(a=>!["No seleccionado"].includes(a.estado)).length;
+  const pctPractica = Math.round((PRACTICA_ACTUAL.horasCompletadas/PRACTICA_ACTUAL.horasRequeridas)*100);
+  const docsPendientes = DOCUMENTOS_PRACTICA.filter(d=>d.estado==="Pendiente").length;
+  return `
+  <div class="section">
+    <div class="grid grid-4">
+      <div class="card kpi-card">
+        <div class="kpi-icon">${icon("list")}</div>
+        <div class="kpi-num">${activas}</div>
+        <div class="kpi-label">Postulaciones activas</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-icon">${icon("progress")}</div>
+        <div class="kpi-num">${pctPractica}%</div>
+        <div class="kpi-label">Progreso de tu práctica</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-icon">${icon("folder")}</div>
+        <div class="kpi-num">${docsPendientes}</div>
+        <div class="kpi-label">Documentos pendientes</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-icon">${icon("calendar")}</div>
+        <div class="kpi-num">${PROXIMAS_FECHAS.length}</div>
+        <div class="kpi-label">Fechas próximas</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="section-head"><h2>Tu práctica actual</h2></div>
+      <div class="card card-pad">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:14px;">
+          <div>
+            <div class="vac-title">${PRACTICA_ACTUAL.cargo}</div>
+            <div class="vac-company">${PRACTICA_ACTUAL.empresa}</div>
+          </div>
+          <span class="badge badge-success"><span class="badge-dot"></span>${PRACTICA_ACTUAL.estado}</span>
+        </div>
+        <div class="progress-label"><span>${PRACTICA_ACTUAL.horasCompletadas} de ${PRACTICA_ACTUAL.horasRequeridas} horas</span><span>${pctPractica}%</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:${pctPractica}%"></div></div>
+        <button class="btn btn-outline btn-sm" style="margin-top:16px;" onclick="setView('practica')">Ver seguimiento completo ${icon("arrowRight")}</button>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>Próximas fechas</h2></div>
+      <div class="card card-pad">
+        ${PROXIMAS_FECHAS.map(f=>`
+          <div class="info-row"><span class="k">${f.fecha}</span><span class="v">${f.evento}</span></div>
+        `).join("")}
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Postulaciones recientes</h2>
+      <button class="btn btn-ghost btn-sm" onclick="setView('postulaciones')">Ver todas ${icon("arrowRight")}</button>
+    </div>
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>Vacante</th><th>Empresa</th><th>Fecha</th><th>Estado</th></tr></thead>
+        <tbody>
+          ${misApps.slice(0,4).map(a=>{
+            const vac = findVacante(a.vacanteId), emp = findEmpresa(vac.empresaId);
+            return `<tr><td class="cell-strong">${vac.cargo}</td><td>${emp.nombre}</td><td class="cell-muted">${fmtDate(a.fecha)}</td><td>${estadoPostulacionBadge(a.estado)}</td></tr>`;
+          }).join("")}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  `;
+}
+
+function viewOpportunities(){
+  const f = state.vacFilters;
+  const list = VACANTES.filter(v=>{
+    const emp = findEmpresa(v.empresaId);
+    const matchQ = !f.q || (v.cargo+" "+emp.nombre).toLowerCase().includes(f.q.toLowerCase());
+    return matchQ && (!f.area||v.area===f.area) && (!f.modalidad||v.modalidad===f.modalidad) && (!f.ciudad||v.ciudad===f.ciudad) && (!f.programa||v.programa===f.programa);
+  });
+  return `
+  <div class="filter-bar">
+    <input type="text" data-focus-key="vac-search" placeholder="Buscar por cargo o empresa" value="${escapeHtml(f.q)}" oninput="updateVacFilter('q', this.value)">
+    <select onchange="updateVacFilter('area', this.value)">
+      <option value="">Todas las áreas</option>
+      ${AREAS.map(a=>`<option ${f.area===a?"selected":""}>${a}</option>`).join("")}
+    </select>
+    <select onchange="updateVacFilter('modalidad', this.value)">
+      <option value="">Toda modalidad</option>
+      ${MODALIDADES.map(m=>`<option ${f.modalidad===m?"selected":""}>${m}</option>`).join("")}
+    </select>
+    <select onchange="updateVacFilter('ciudad', this.value)">
+      <option value="">Toda ciudad</option>
+      ${CIUDADES.map(c=>`<option ${f.ciudad===c?"selected":""}>${c}</option>`).join("")}
+    </select>
+    <select onchange="updateVacFilter('programa', this.value)">
+      <option value="">Todo programa</option>
+      ${PROGRAMAS.map(p=>`<option ${f.programa===p?"selected":""}>${p}</option>`).join("")}
+    </select>
+  </div>
+  <p class="faint" style="margin-bottom:14px;">${list.length} oportunidad${list.length===1?"":"es"} encontrada${list.length===1?"":"s"}</p>
+  <div class="grid grid-3">
+    ${list.map(v=>{
+      const emp = findEmpresa(v.empresaId);
+      const postulado = yaPostulado(v.id);
+      return `
+      <div class="card vac-card" onclick="openVacancy('${v.id}')">
+        <div class="vac-card-top">
+          <div>
+            <div class="vac-title">${v.cargo}</div>
+            <div class="vac-company">${emp.nombre}</div>
+          </div>
+          ${postulado?'<span class="badge badge-success">Postulado</span>':""}
+        </div>
+        <div class="vac-meta">
+          <span class="vac-tag">${icon("briefcase","tag-icon")}${v.modalidad}</span>
+          <span class="vac-tag">${icon("pin","tag-icon")}${v.ciudad}</span>
+          <span class="vac-tag">${v.area}</span>
+        </div>
+        <div class="vac-foot"><span>${v.tipo}</span><span>${icon("calendar","tag-icon")} Cierra ${fmtDate(v.fechaLimite)}</span></div>
+      </div>`;
+    }).join("") || `<div class="empty-state" style="grid-column:1/-1;"><h3>No encontramos oportunidades</h3><p>Ajusta los filtros de búsqueda para ver más resultados.</p></div>`}
+  </div>
+  `;
+}
+function updateVacFilter(key, val){ state.vacFilters[key]=val; render(); }
+
+function openVacancy(id){ state.modal = {type:"vacancy", id}; render(); }
+function closeModal(){ state.modal = null; render(); }
+
+function applyToVacancy(id){
+  if(yaPostulado(id)) return;
+  appCounter++;
+  APLICACIONES.push({id:"a"+appCounter, vacanteId:id, estudianteId:"s1", fecha:new Date().toISOString().slice(0,10), estado:"Postulado"});
+  render();
+  showToast("Postulación enviada correctamente");
+}
+
+function viewMyApplications(){
+  const apps = misPostulaciones();
+  return `
+  <div class="card table-wrap">
+    <table>
+      <thead><tr><th>Vacante</th><th>Empresa</th><th>Fecha</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+        ${apps.map(a=>{
+          const vac = findVacante(a.vacanteId), emp = findEmpresa(vac.empresaId);
+          return `<tr>
+            <td class="cell-strong">${vac.cargo}</td>
+            <td>${emp.nombre}</td>
+            <td class="cell-muted">${fmtDate(a.fecha)}</td>
+            <td>${estadoPostulacionBadge(a.estado)}</td>
+            <td><button class="btn btn-ghost btn-sm" onclick="openVacancy('${vac.id}')">Ver vacante</button></td>
+          </tr>`;
+        }).join("") || `<tr><td colspan="5"><div class="empty-state"><h3>Aún no tienes postulaciones</h3><p>Explora el portal de oportunidades para postularte.</p></div></td></tr>`}
+      </tbody>
+    </table>
+  </div>
+  `;
+}
+
+function viewMyPractice(){
+  const p = PRACTICA_ACTUAL;
+  const pct = Math.round((p.horasCompletadas/p.horasRequeridas)*100);
+  const pendientesH = p.horasRequeridas - p.horasCompletadas;
+  return `
+  <div class="section">
+    <div class="section-head"><h2>Línea de tiempo del proceso</h2></div>
+    <div class="card card-pad">
+      <div class="timeline">
+        ${PRACTICA_TIMELINE.map(t=>`
+          <div class="timeline-item ${t.tono}">
+            <div class="timeline-dot">${t.tono==="done"?icon("check"):t.tono==="current"?'<span style="width:8px;height:8px;border-radius:50%;background:#fff;display:block;"></span>':""}</div>
+            <div class="timeline-name">${t.nombre}</div>
+            <div class="timeline-state">${t.estado}</div>
+            <div class="timeline-date">${t.fecha}</div>
+          </div>`).join("")}
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="card card-pad">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px;">
+          <div>
+            <div class="vac-title" style="font-size:19px;">${p.cargo}</div>
+            <div class="vac-company">${p.empresa}</div>
+          </div>
+          <span class="badge badge-success"><span class="badge-dot"></span>${p.estado}</span>
+        </div>
+
+        <h3 style="font-size:13px; margin-bottom:10px; color:var(--text-muted); font-family:var(--font-body); font-weight:600;">Seguimiento de horas</h3>
+        <div class="hours-stats">
+          <div class="hours-stat"><div class="n">${p.horasRequeridas}</div><div class="l">Horas requeridas</div></div>
+          <div class="hours-stat"><div class="n">${p.horasCompletadas}</div><div class="l">Horas completadas</div></div>
+          <div class="hours-stat"><div class="n">${pendientesH}</div><div class="l">Horas pendientes</div></div>
+        </div>
+        <div class="progress-label"><span>Progreso de la práctica</span><span>${pct}%</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <span class="hours-pct-tag">${pct}% completado</span>
+
+        <div class="divider"></div>
+        <h3 style="font-size:13px; margin-bottom:6px; color:var(--text-muted); font-family:var(--font-body); font-weight:600;">Horas registradas por mes</h3>
+        ${verticalBarChart(HORAS_POR_MES)}
+
+        <div class="divider"></div>
+        <div class="info-row"><span class="k">Fecha de inicio</span><span class="v">${p.fechaInicio}</span></div>
+        <div class="info-row"><span class="k">Fecha estimada de finalización</span><span class="v">${p.fechaFin}</span></div>
+        <div class="info-row"><span class="k">Tutor empresarial</span><span class="v">${p.tutorEmpresarial}</span></div>
+        <div class="info-row"><span class="k">Tutor universitario</span><span class="v">${p.tutorUniversitario}</span></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="card card-pad" style="margin-bottom:16px;">
+        <h3 style="font-size:14.5px; margin-bottom:12px;">Documentos de la práctica</h3>
+        ${DOCUMENTOS_PRACTICA.map(d=>`
+          <div class="doc-row"><span class="doc-name">${d.nombre}</span>${docEstadoBadge(d.estado)}</div>
+        `).join("")}
+      </div>
+      <div class="card card-pad">
+        <h3 style="font-size:14.5px; margin-bottom:12px;">Próximas fechas</h3>
+        ${PROXIMAS_FECHAS.map(f=>`<div class="info-row"><span class="k">${f.fecha}</span><span class="v">${f.evento}</span></div>`).join("")}
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+function viewMyDocuments(){
+  return `
+  <div class="card card-pad" style="max-width:560px;">
+    <p class="muted" style="margin-bottom:16px; font-size:13px;">Documentación asociada a tu proceso de práctica profesional. El cargue de archivos no está habilitado en este prototipo.</p>
+    ${DOCUMENTOS_PRACTICA.map(d=>`
+      <div class="doc-row"><span class="doc-name">${d.nombre}</span>${docEstadoBadge(d.estado)}</div>
+    `).join("")}
+  </div>
+  `;
+}
+
+function viewStudentProfile(){
+  const s = ESTUDIANTES.find(x=>x.id==="s1");
+  return `
+  <div class="two-col">
+    <div class="card card-pad">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+        <div class="avatar-init" style="width:52px;height:52px;font-size:16px;">${initials(s.nombre)}</div>
+        <div>
+          <div class="vac-title" style="font-size:18px;">${s.nombre}</div>
+          <div class="vac-company">${s.programa}</div>
+        </div>
+      </div>
+      <div class="info-row"><span class="k">Semestre</span><span class="v">${s.semestre}°</span></div>
+      <div class="info-row"><span class="k">Correo institucional</span><span class="v">camilo.moya@iubello.edu.co</span></div>
+      <div class="info-row"><span class="k">Estado académico</span><span class="v">${s.estadoAcademico}</span></div>
+      <div class="info-row"><span class="k">Estado de práctica</span><span class="v">${estadoPracticaBadge(s.estadoPractica)}</span></div>
+      <div class="info-row"><span class="k">Disponibilidad</span><span class="v">Tiempo completo</span></div>
+    </div>
+    <div class="card card-pad">
+      <h3 style="font-size:14.5px; margin-bottom:12px;">Perfil profesional</h3>
+      <p class="muted" style="font-size:13px; line-height:1.6; margin-bottom:16px;">Estudiante de ${s.programa}, interesado en desarrollo de software y análisis de datos. Con disposición para el aprendizaje y el trabajo en equipo.</p>
+      <h3 style="font-size:14.5px; margin-bottom:10px;">Habilidades</h3>
+      <div class="tag-list" style="margin-bottom:16px;">
+        ${["JavaScript","Git","SQL","Trabajo en equipo","Resolución de problemas"].map(h=>`<span class="vac-tag">${h}</span>`).join("")}
+      </div>
+      <h3 style="font-size:14.5px; margin-bottom:10px;">Hoja de vida</h3>
+      <div class="doc-row" style="border:1px solid var(--border); border-radius:var(--radius-sm); padding:12px 14px;">
+        <span class="doc-name">CV_Camilo_Moya.pdf</span>
+        <span class="badge badge-info">Cargado</span>
+      </div>
+      <p class="faint" style="margin-top:14px;">Datos de demostración — perfil ficticio.</p>
+    </div>
+  </div>
+  `;
+}
+
+/* ======================================================================
+   MODAL (vacante / publicar vacante / empresa / estudiante)
+   ====================================================================== */
+function renderModal(){
+  if(!state.modal) return "";
+  if(state.modal.type==="vacancy") return renderVacancyModal(state.modal.id);
+  if(state.modal.type==="publish") return renderPublishModal();
+  if(state.modal.type==="company") return renderCompanyModal(state.modal.id);
+  if(state.modal.type==="student") return renderStudentModal(state.modal.id);
+  return "";
+}
+
+function renderVacancyModal(id){
+  const v = findVacante(id), emp = findEmpresa(v.empresaId);
+  const postulado = yaPostulado(id);
+  const isStudent = state.currentUser.role==="estudiante";
+  return `
+  <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div>
+          <h3 style="font-size:19px;">${v.cargo}</h3>
+          <div class="vac-company" style="margin-top:4px;">${emp.nombre}</div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="vac-meta" style="margin-bottom:18px;">
+          <span class="vac-tag">${v.modalidad}</span>
+          <span class="vac-tag">${v.ciudad}</span>
+          <span class="vac-tag">${v.tipo}</span>
+          <span class="vac-tag">${v.area}</span>
+        </div>
+        <h4 style="font-size:13.5px; margin-bottom:8px;">Descripción</h4>
+        <p class="muted" style="font-size:13.5px; line-height:1.6; margin-bottom:16px;">${v.descripcion}</p>
+        <h4 style="font-size:13.5px; margin-bottom:8px;">Responsabilidades</h4>
+        <ul style="margin:0 0 16px 18px; padding:0; font-size:13.5px; color:var(--text-muted); line-height:1.8;">
+          ${v.responsabilidades.map(r=>`<li>${r}</li>`).join("")}
+        </ul>
+        <h4 style="font-size:13.5px; margin-bottom:8px;">Requisitos</h4>
+        <ul style="margin:0 0 16px 18px; padding:0; font-size:13.5px; color:var(--text-muted); line-height:1.8;">
+          ${v.requisitos.map(r=>`<li>${r}</li>`).join("")}
+        </ul>
+        <h4 style="font-size:13.5px; margin-bottom:8px;">Habilidades</h4>
+        <div class="tag-list" style="margin-bottom:18px;">${v.habilidades.map(h=>`<span class="vac-tag">${h}</span>`).join("")}</div>
+        <div class="divider"></div>
+        <div class="info-row"><span class="k">Programa académico requerido</span><span class="v">${v.programa}</span></div>
+        <div class="info-row"><span class="k">Vacantes disponibles</span><span class="v">${v.vacantesNum}</span></div>
+        <div class="info-row"><span class="k">Fecha de publicación</span><span class="v">${fmtDate(v.fechaPublicacion)}</span></div>
+        <div class="info-row"><span class="k">Fecha límite de aplicación</span><span class="v">${fmtDate(v.fechaLimite)}</span></div>
+      </div>
+      <div class="modal-foot">
+        <button class="btn btn-ghost" onclick="closeModal()">Cerrar</button>
+        ${isStudent ? (postulado
+          ? `<button class="btn btn-primary" disabled>${icon("check")} Postulación enviada</button>`
+          : `<button class="btn btn-gold" onclick="applyToVacancy('${v.id}')">Postularme</button>`) : ""}
+      </div>
+    </div>
+  </div>`;
+}
+
+/* ======================================================================
+   VISTAS — EMPRESA  (empresa demo: e1, Tech Solutions Colombia)
+   ====================================================================== */
+const CURRENT_COMPANY_ID = "e1";
+
+function companyVacancies(){ return VACANTES.filter(v=>v.empresaId===CURRENT_COMPANY_ID); }
+function vacanciePostulantesCount(vacId){ return APLICACIONES.filter(a=>a.vacanteId===vacId).length; }
+
+function viewCompanyHome(){
+  const emp = findEmpresa(CURRENT_COMPANY_ID);
+  const vacs = companyVacancies();
+  const totalPostulantes = vacs.reduce((sum,v)=>sum+vacanciePostulantesCount(v.id),0);
+  const practicantes = ESTUDIANTES.filter(s=>s.empresa===emp.nombre && s.estadoPractica==="En práctica");
+  return `
+  <div class="section">
+    <div class="grid grid-3">
+      <div class="card kpi-card">
+        <div class="kpi-icon">${icon("briefcase")}</div>
+        <div class="kpi-num">${vacs.length}</div>
+        <div class="kpi-label">Vacantes activas</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-icon">${icon("candidates")}</div>
+        <div class="kpi-num">${totalPostulantes}</div>
+        <div class="kpi-label">Postulaciones recibidas</div>
+      </div>
+      <div class="card kpi-card">
+        <div class="kpi-icon">${icon("progress")}</div>
+        <div class="kpi-num">${practicantes.length}</div>
+        <div class="kpi-label">Practicantes activos</div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-head"><h2>Vacantes publicadas</h2>
+      <button class="btn btn-gold btn-sm" onclick="openPublishForm()">${icon("plus")} Publicar vacante</button>
+    </div>
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>Cargo</th><th>Área</th><th>Modalidad</th><th>Postulantes</th><th>Cierra</th></tr></thead>
+        <tbody>
+          ${vacs.map(v=>`
+            <tr style="cursor:pointer" onclick="openVacancy('${v.id}')">
+              <td class="cell-strong">${v.cargo}</td><td>${v.area}</td><td>${v.modalidad}</td>
+              <td>${vacanciePostulantesCount(v.id)}</td><td class="cell-muted">${fmtDate(v.fechaLimite)}</td>
+            </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  `;
+}
+
+function viewCompanyVacancies(){
+  const vacs = companyVacancies();
+  return `
+  <div class="section-head"><h2 style="font-size:15px; color:var(--text-muted); font-family:var(--font-body); font-weight:600;">${vacs.length} vacante${vacs.length===1?"":"s"} publicada${vacs.length===1?"":"s"}</h2>
+    <button class="btn btn-gold btn-sm" onclick="openPublishForm()">${icon("plus")} Publicar vacante</button>
+  </div>
+  <div class="grid grid-3">
+    ${vacs.map(v=>`
+      <div class="card vac-card" onclick="openVacancy('${v.id}')">
+        <div class="vac-card-top">
+          <div><div class="vac-title">${v.cargo}</div><div class="vac-company">${v.programa}</div></div>
+        </div>
+        <div class="vac-meta"><span class="vac-tag">${icon("briefcase","tag-icon")}${v.modalidad}</span><span class="vac-tag">${icon("pin","tag-icon")}${v.ciudad}</span></div>
+        <div class="vac-foot"><span>${vacanciePostulantesCount(v.id)} postulantes</span><span>Cierra ${fmtDate(v.fechaLimite)}</span></div>
+      </div>`).join("")}
+  </div>
+  `;
+}
+
+function openPublishForm(){ state.modal = {type:"publish"}; render(); }
+
+function renderPublishModal(){
+  return `
+  <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+    <div class="modal-box" style="max-width:600px;">
+      <div class="modal-head"><h3 style="font-size:18px;">Publicar nueva vacante</h3><button class="modal-close" onclick="closeModal()">&times;</button></div>
+      <form onsubmit="return submitVacancyForm(event)">
+        <div class="modal-body">
+          <div class="field"><label>Nombre del cargo</label><input type="text" id="pv-cargo" required placeholder="Ej. Practicante de Diseño"></div>
+          <div class="field"><label>Descripción</label><textarea id="pv-desc" required placeholder="Describe brevemente la oportunidad"></textarea></div>
+          <div class="two-col">
+            <div class="field"><label>Área</label><select id="pv-area">${AREAS.map(a=>`<option>${a}</option>`).join("")}</select></div>
+            <div class="field"><label>Programa académico requerido</label><select id="pv-programa">${PROGRAMAS.map(p=>`<option>${p}</option>`).join("")}</select></div>
+          </div>
+          <div class="two-col">
+            <div class="field"><label>Modalidad</label><select id="pv-modalidad">${MODALIDADES.map(m=>`<option>${m}</option>`).join("")}</select></div>
+            <div class="field"><label>Ciudad</label><select id="pv-ciudad">${CIUDADES.map(c=>`<option>${c}</option>`).join("")}</select></div>
+          </div>
+          <div class="two-col">
+            <div class="field"><label>Tipo de oportunidad</label><select id="pv-tipo"><option>Práctica profesional</option><option>Pasantía</option></select></div>
+            <div class="field"><label>Número de vacantes</label><input type="number" id="pv-num" min="1" value="1"></div>
+          </div>
+          <div class="field"><label>Requisitos (uno por línea)</label><textarea id="pv-reqs" placeholder="Cursando 5° semestre en adelante&#10;Disponibilidad de tiempo completo"></textarea></div>
+          <div class="field"><label>Fecha límite</label><input type="date" id="pv-fecha" required></div>
+        </div>
+        <div class="modal-foot">
+          <button type="button" class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+          <button type="submit" class="btn btn-gold">Publicar vacante</button>
+        </div>
+      </form>
+    </div>
+  </div>`;
+}
+
+function submitVacancyForm(ev){
+  ev.preventDefault();
+  const reqsRaw = document.getElementById("pv-reqs").value.trim();
+  const newVac = {
+    id:"v"+(VACANTES.length+1)+"_"+Date.now().toString().slice(-4),
+    cargo: document.getElementById("pv-cargo").value.trim() || "Nueva vacante",
+    empresaId: CURRENT_COMPANY_ID,
+    modalidad: document.getElementById("pv-modalidad").value,
+    ciudad: document.getElementById("pv-ciudad").value,
+    tipo: document.getElementById("pv-tipo").value,
+    area: document.getElementById("pv-area").value,
+    programa: document.getElementById("pv-programa").value,
+    vacantesNum: parseInt(document.getElementById("pv-num").value)||1,
+    descripcion: document.getElementById("pv-desc").value.trim(),
+    responsabilidades: ["Apoyar las actividades asignadas por el equipo","Participar en el seguimiento de tareas del área"],
+    requisitos: reqsRaw ? reqsRaw.split("\n").map(s=>s.trim()).filter(Boolean) : ["Ser estudiante activo de IUBello"],
+    habilidades: ["Trabajo en equipo","Disposición para aprender"],
+    fechaPublicacion: new Date().toISOString().slice(0,10),
+    fechaLimite: document.getElementById("pv-fecha").value || new Date().toISOString().slice(0,10),
+  };
+  VACANTES.push(newVac);
+  closeModal();
+  showToast("Vacante publicada correctamente");
+  return false;
+}
+
+function viewCompanyApplicants(){
+  const vacs = companyVacancies();
+  if(!vacs.find(v=>v.id===state.companySelectedForApplicants)) state.companySelectedForApplicants = vacs[0] ? vacs[0].id : null;
+  const selected = state.companySelectedForApplicants;
+  const apps = selected ? APLICACIONES.filter(a=>a.vacanteId===selected) : [];
+  return `
+  <div class="field" style="max-width:360px; margin-bottom:20px;">
+    <label>Selecciona una vacante</label>
+    <select onchange="state.companySelectedForApplicants=this.value; render()">
+      ${vacs.map(v=>`<option value="${v.id}" ${v.id===selected?"selected":""}>${v.cargo}</option>`).join("")}
+    </select>
+  </div>
+  <p class="faint" style="margin-bottom:14px;">${apps.length} postulante${apps.length===1?"":"s"}</p>
+  <div class="card table-wrap">
+    <table>
+      <thead><tr><th>Candidato</th><th>Programa</th><th>Semestre</th><th>Fecha</th><th>Estado</th><th>Actualizar estado</th></tr></thead>
+      <tbody>
+        ${apps.map(a=>{
+          const est = findEstudiante(a.estudianteId);
+          return `<tr>
+            <td class="cell-strong">${est.nombre}</td>
+            <td>${est.programa}</td>
+            <td>${est.semestre}°</td>
+            <td class="cell-muted">${fmtDate(a.fecha)}</td>
+            <td>${estadoPostulacionBadge(a.estado)}</td>
+            <td>
+              <select onchange="changeApplicationStatus('${a.id}', this.value)" style="padding:6px 10px; border:1px solid var(--border-strong); border-radius:6px; font-size:12.5px;">
+                ${["Postulado","En revisión","Preseleccionado","Seleccionado","No seleccionado"].map(s=>`<option ${s===a.estado?"selected":""}>${s}</option>`).join("")}
+              </select>
+            </td>
+          </tr>`;
+        }).join("") || `<tr><td colspan="6"><div class="empty-state"><h3>Aún no hay postulantes</h3><p>Cuando un estudiante se postule aparecerá aquí.</p></div></td></tr>`}
+      </tbody>
+    </table>
+  </div>
+  `;
+}
+
+function changeApplicationStatus(appId, newStatus){
+  const app = APLICACIONES.find(a=>a.id===appId);
+  if(app){ app.estado = newStatus; render(); showToast("Estado actualizado a \u201c"+newStatus+"\u201d"); }
+}
+
+function viewCompanyInterns(){
+  const emp = findEmpresa(CURRENT_COMPANY_ID);
+  const interns = ESTUDIANTES.filter(s=>s.empresa===emp.nombre && (s.estadoPractica==="En práctica"||s.estadoPractica==="Finalizada"));
+  return `
+  <div class="grid grid-3">
+    ${interns.map(s=>{
+      const pct = s.horasRequeridas ? Math.round((s.horasCompletadas/s.horasRequeridas)*100) : 0;
+      return `
+      <div class="card card-pad">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+          <div class="avatar-init">${initials(s.nombre)}</div>
+          <div><div class="cell-strong">${s.nombre}</div><div class="cell-muted">${s.programa}</div></div>
+        </div>
+        <div class="progress-label"><span>${s.horasCompletadas}/${s.horasRequeridas} h</span><span>${pct}%</span></div>
+        <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div style="margin-top:12px;">${estadoPracticaBadge(s.estadoPractica)}</div>
+      </div>`;
+    }).join("") || `<div class="empty-state" style="grid-column:1/-1;"><h3>Aún no tienes practicantes vinculados</h3></div>`}
+  </div>
+  `;
+}
+
+function viewCompanyProfile(){
+  const e = findEmpresa(CURRENT_COMPANY_ID);
+  return `
+  <div class="two-col">
+    <div class="card card-pad">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+        <div class="avatar-init" style="width:52px;height:52px;font-size:15px;">${initials(e.nombre)}</div>
+        <div><div class="vac-title" style="font-size:18px;">${e.nombre}</div><div class="vac-company">${e.sector}</div></div>
+      </div>
+      <div class="info-row"><span class="k">Correo de contacto</span><span class="v">${e.contacto}</span></div>
+      <div class="info-row"><span class="k">Estado del convenio</span><span class="v">${estadoEmpresaBadge(e.estado)}</span></div>
+      <div class="info-row"><span class="k">Vacantes activas</span><span class="v">${e.vacantesActivas}</span></div>
+      <div class="info-row"><span class="k">Postulaciones recibidas</span><span class="v">${e.postulacionesRecibidas}</span></div>
+      <div class="info-row"><span class="k">Estudiantes vinculados</span><span class="v">${e.estudiantesVinculados}</span></div>
+    </div>
+    <div class="card card-pad">
+      <h3 style="font-size:14.5px; margin-bottom:10px;">Acerca de la empresa</h3>
+      <p class="muted" style="font-size:13px; line-height:1.6;">Empresa aliada de IUBello para la vinculación de estudiantes en procesos de práctica profesional, con oportunidades enfocadas en ${e.sector.toLowerCase()}.</p>
+      <p class="faint" style="margin-top:16px;">Datos de demostración — perfil ficticio.</p>
+    </div>
+  </div>
+  `;
+}
+
+/* ======================================================================
+   VISTAS — UNIVERSIDAD
+   ====================================================================== */
+function barChart(data, max){
+  const m = max || Math.max(...data.map(d=>d.valor));
+  return `<div class="bar-chart">${data.map(d=>`
+    <div class="bar-row">
+      <div class="bar-label">${d.label}</div>
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round((d.valor/m)*100)}%; ${d.color?`background:${d.color};`:""}"></div></div>
+      <div class="bar-value">${d.valor}</div>
+    </div>`).join("")}</div>`;
+}
+function verticalBarChart(data, max){
+  const m = max || Math.max(...data.map(d=>d.valor));
+  return `<div class="vbar-chart">${data.map(d=>`
+    <div class="vbar-col">
+      <div class="vbar-value">${d.valor}</div>
+      <div class="vbar-track" style="height:${Math.max(6,Math.round((d.valor/m)*100))}%"></div>
+      <div class="vbar-label">${d.label}</div>
+    </div>`).join("")}</div>`;
+}
+function pendingDocsCount(){ return ESTUDIANTES.filter(s=>s.documentacion==="Pendiente").length; }
+
+function viewUniDashboard(){
+  const k = KPIS_UNIVERSIDAD;
+  return `
+  <div class="section">
+    <div class="grid grid-3">
+      <div class="card kpi-card kpi-primary"><div class="kpi-icon">${icon("user")}</div><div class="kpi-num">${k.enPractica}</div><div class="kpi-label">Estudiantes en práctica</div></div>
+      <div class="card kpi-card kpi-primary"><div class="kpi-icon">${icon("building")}</div><div class="kpi-num">${k.empresasAliadas}</div><div class="kpi-label">Empresas aliadas</div></div>
+      <div class="card kpi-card kpi-primary"><div class="kpi-icon">${icon("briefcase")}</div><div class="kpi-num">${k.vacantesActivas}</div><div class="kpi-label">Vacantes activas</div></div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="grid grid-3">
+      <div class="card kpi-card kpi-secondary"><div class="kpi-icon">${icon("candidates")}</div><div class="kpi-num">${k.postulacionesMes}</div><div class="kpi-label">Postulaciones este mes</div></div>
+      <div class="card kpi-card kpi-secondary"><div class="kpi-icon">${icon("clock")}</div><div class="kpi-num">${k.proximasFinalizar}</div><div class="kpi-label">Prácticas próximas a finalizar</div></div>
+      <div class="card kpi-card kpi-secondary"><div class="kpi-icon">${icon("folder")}</div><div class="kpi-num">${pendingDocsCount()}</div><div class="kpi-label">Documentos pendientes de revisión</div></div>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="section">
+      <div class="section-head"><h2>Estudiantes en práctica por programa</h2><span class="faint">¿Qué programas tienen más estudiantes en práctica?</span></div>
+      <div class="card card-pad">${barChart(ESTUDIANTES_POR_PROGRAMA)}</div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>Vacantes por área</h2><span class="faint">¿Dónde se concentran las oportunidades?</span></div>
+      <div class="card card-pad">${barChart(VACANTES_POR_AREA)}</div>
+    </div>
+  </div>
+  <div class="two-col">
+    <div class="section">
+      <div class="section-head"><h2>Estado de las prácticas</h2><span class="faint">Activas, finalizadas, en proceso y pendientes</span></div>
+      <div class="card card-pad">${barChart(ESTADO_PRACTICAS)}</div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>Evolución de postulaciones</h2><span class="faint">Últimos 6 meses</span></div>
+      <div class="card card-pad">${verticalBarChart(EVOLUCION_POSTULACIONES)}</div>
+    </div>
+  </div>
+  `;
+}
+
+function viewUniStudents(){
+  const f = state.studentFilters;
+  const list = ESTUDIANTES.filter(s=>{
+    const matchQ = !f.q || s.nombre.toLowerCase().includes(f.q.toLowerCase());
+    return matchQ && (!f.programa||s.programa===f.programa) && (!f.estado||s.estadoPractica===f.estado);
+  });
+  return `
+  <div class="filter-bar">
+    <input type="text" data-focus-key="student-search" placeholder="Buscar estudiante" value="${escapeHtml(f.q)}" oninput="updateStudentFilter('q', this.value)">
+    <select onchange="updateStudentFilter('programa', this.value)">
+      <option value="">Todos los programas</option>
+      ${PROGRAMAS.map(p=>`<option ${f.programa===p?"selected":""}>${p}</option>`).join("")}
+    </select>
+    <select onchange="updateStudentFilter('estado', this.value)">
+      <option value="">Todo estado de práctica</option>
+      ${["Sin práctica","En proceso de vinculación","En práctica","Finalizada"].map(e=>`<option ${f.estado===e?"selected":""}>${e}</option>`).join("")}
+    </select>
+  </div>
+  <p class="faint" style="margin-bottom:14px;">${list.length} estudiante${list.length===1?"":"s"}</p>
+  <div class="card table-wrap">
+    <table>
+      <thead><tr><th>Estudiante</th><th>Programa</th><th>Semestre</th><th>Estado de práctica</th><th>Empresa</th><th>Horas</th><th>Documentación</th></tr></thead>
+      <tbody>
+        ${list.map(s=>`
+          <tr style="cursor:pointer" onclick="openStudentDetail('${s.id}')">
+            <td class="cell-strong">${s.nombre}</td>
+            <td>${s.programa}</td>
+            <td>${s.semestre}°</td>
+            <td>${estadoPracticaBadge(s.estadoPractica)}</td>
+            <td>${s.empresa}</td>
+            <td class="cell-muted">${s.horasRequeridas? s.horasCompletadas+"/"+s.horasRequeridas : "—"}</td>
+            <td class="cell-muted">${s.documentacion}</td>
+          </tr>`).join("") || `<tr><td colspan="7"><div class="empty-state"><h3>No se encontraron estudiantes</h3></div></td></tr>`}
+      </tbody>
+    </table>
+  </div>
+  `;
+}
+function updateStudentFilter(key,val){ state.studentFilters[key]=val; render(); }
+function openStudentDetail(id){ state.modal = {type:"student", id}; render(); }
+
+function renderStudentModal(id){
+  const s = findEstudiante(id);
+  const apps = APLICACIONES.filter(a=>a.estudianteId===id);
+  const pct = s.horasRequeridas ? Math.round((s.horasCompletadas/s.horasRequeridas)*100) : 0;
+  return `
+  <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="avatar-init">${initials(s.nombre)}</div>
+          <div><h3 style="font-size:17.5px;">${s.nombre}</h3><div class="vac-company">${s.programa} · ${s.semestre}° semestre</div></div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="info-row"><span class="k">Estado académico</span><span class="v">${s.estadoAcademico}</span></div>
+        <div class="info-row"><span class="k">Estado de práctica</span><span class="v">${estadoPracticaBadge(s.estadoPractica)}</span></div>
+        <div class="info-row"><span class="k">Empresa</span><span class="v">${s.empresa}</span></div>
+        <div class="info-row"><span class="k">Documentación</span><span class="v">${s.documentacion}</span></div>
+        ${s.horasRequeridas ? `
+        <div style="margin-top:16px;">
+          <div class="progress-label"><span>${s.horasCompletadas}/${s.horasRequeridas} horas</span><span>${pct}%</span></div>
+          <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+        </div>` : ""}
+        <div class="divider"></div>
+        <h4 style="font-size:13.5px; margin-bottom:8px;">Historial de postulaciones</h4>
+        ${apps.map(a=>{ const vac=findVacante(a.vacanteId); return `<div class="info-row"><span class="k">${vac.cargo}</span><span class="v">${estadoPostulacionBadge(a.estado)}</span></div>`; }).join("") || `<p class="faint">Sin postulaciones registradas.</p>`}
+      </div>
+      <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cerrar</button></div>
+    </div>
+  </div>`;
+}
+
+function viewUniCompanies(){
+  return `
+  <div class="card table-wrap">
+    <table>
+      <thead><tr><th>Empresa</th><th>Sector</th><th>Contacto</th><th>Vacantes activas</th><th>Estudiantes vinculados</th><th>Estado</th></tr></thead>
+      <tbody>
+        ${EMPRESAS.map(e=>`
+          <tr style="cursor:pointer" onclick="openCompanyDetail('${e.id}')">
+            <td class="cell-strong">${e.nombre}</td>
+            <td>${e.sector}</td>
+            <td class="cell-muted">${e.contacto}</td>
+            <td>${e.vacantesActivas}</td>
+            <td>${e.estudiantesVinculados}</td>
+            <td>${estadoEmpresaBadge(e.estado)}</td>
+          </tr>`).join("")}
+      </tbody>
+    </table>
+  </div>
+  `;
+}
+function openCompanyDetail(id){ state.modal = {type:"company", id}; render(); }
+
+function renderCompanyModal(id){
+  const e = findEmpresa(id);
+  const vacs = VACANTES.filter(v=>v.empresaId===id);
+  return `
+  <div class="modal-overlay" onclick="if(event.target===this) closeModal()">
+    <div class="modal-box">
+      <div class="modal-head">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div class="avatar-init">${initials(e.nombre)}</div>
+          <div><h3 style="font-size:17.5px;">${e.nombre}</h3><div class="vac-company">${e.sector}</div></div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="info-row"><span class="k">Correo de contacto</span><span class="v">${e.contacto}</span></div>
+        <div class="info-row"><span class="k">Estado del convenio</span><span class="v">${estadoEmpresaBadge(e.estado)}</span></div>
+        <div class="info-row"><span class="k">Vacantes activas</span><span class="v">${e.vacantesActivas}</span></div>
+        <div class="info-row"><span class="k">Postulaciones recibidas</span><span class="v">${e.postulacionesRecibidas}</span></div>
+        <div class="info-row"><span class="k">Estudiantes vinculados</span><span class="v">${e.estudiantesVinculados}</span></div>
+        <div class="divider"></div>
+        <h4 style="font-size:13.5px; margin-bottom:8px;">Vacantes publicadas</h4>
+        ${vacs.map(v=>`<div class="info-row"><span class="k">${v.cargo}</span><span class="v">${vacanciePostulantesCount(v.id)} postulantes</span></div>`).join("") || `<p class="faint">Esta empresa aún no ha publicado vacantes.</p>`}
+      </div>
+      <div class="modal-foot"><button class="btn btn-ghost" onclick="closeModal()">Cerrar</button></div>
+    </div>
+  </div>`;
+}
+
+function viewUniVacancies(){
+  return `
+  <div class="card table-wrap">
+    <table>
+      <thead><tr><th>Cargo</th><th>Empresa</th><th>Área</th><th>Modalidad</th><th>Ciudad</th><th>Postulantes</th><th>Cierra</th></tr></thead>
+      <tbody>
+        ${VACANTES.map(v=>{ const emp = findEmpresa(v.empresaId); return `
+          <tr style="cursor:pointer" onclick="openVacancy('${v.id}')">
+            <td class="cell-strong">${v.cargo}</td><td>${emp.nombre}</td><td>${v.area}</td><td>${v.modalidad}</td><td>${v.ciudad}</td>
+            <td>${vacanciePostulantesCount(v.id)}</td><td class="cell-muted">${fmtDate(v.fechaLimite)}</td>
+          </tr>`; }).join("")}
+      </tbody>
+    </table>
+  </div>
+  `;
+}
+
+function viewUniPractices(){
+  const enPractica = ESTUDIANTES.filter(s=>s.estadoPractica==="En práctica");
+  return `
+  <div class="card table-wrap">
+    <table>
+      <thead><tr><th>Estudiante</th><th>Empresa</th><th>Programa</th><th>Progreso</th><th></th></tr></thead>
+      <tbody>
+        ${enPractica.map(s=>{
+          const pct = Math.round((s.horasCompletadas/s.horasRequeridas)*100);
+          return `<tr style="cursor:pointer" onclick="openStudentDetail('${s.id}')">
+            <td class="cell-strong">${s.nombre}</td><td>${s.empresa}</td><td>${s.programa}</td>
+            <td style="min-width:160px;">
+              <div class="progress-label" style="margin-bottom:4px;"><span>${s.horasCompletadas}/${s.horasRequeridas} h</span><span>${pct}%</span></div>
+              <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+            </td>
+            <td><span class="badge badge-success"><span class="badge-dot"></span>En curso</span></td>
+          </tr>`;
+        }).join("")}
+      </tbody>
+    </table>
+  </div>
+  `;
+}
+
+function viewUniDocuments(){
+  const pendientes = ESTUDIANTES.filter(s=>s.documentacion==="Pendiente");
+  const enTramite = ESTUDIANTES.filter(s=>s.documentacion==="En trámite");
+  const completa = ESTUDIANTES.filter(s=>s.documentacion==="Completa");
+  return `
+  <div class="section">
+    <div class="grid grid-3">
+      <div class="card kpi-card"><div class="kpi-icon">${icon("check")}</div><div class="kpi-num">${completa.length}</div><div class="kpi-label">Documentación completa</div></div>
+      <div class="card kpi-card"><div class="kpi-icon">${icon("clock")}</div><div class="kpi-num">${enTramite.length}</div><div class="kpi-label">En trámite</div></div>
+      <div class="card kpi-card"><div class="kpi-icon">${icon("folder")}</div><div class="kpi-num">${pendientes.length}</div><div class="kpi-label">Pendientes</div></div>
+    </div>
+  </div>
+  <div class="card table-wrap">
+    <table>
+      <thead><tr><th>Estudiante</th><th>Programa</th><th>Estado de práctica</th><th>Documentación</th></tr></thead>
+      <tbody>
+        ${ESTUDIANTES.map(s=>`
+          <tr style="cursor:pointer" onclick="openStudentDetail('${s.id}')">
+            <td class="cell-strong">${s.nombre}</td><td>${s.programa}</td><td>${estadoPracticaBadge(s.estadoPractica)}</td>
+            <td>${docEstadoBadge(s.documentacion==="Completa"?"Aprobado":s.documentacion==="En trámite"?"Entregado":"Pendiente")} <span class="faint">${s.documentacion}</span></td>
+          </tr>`).join("")}
+      </tbody>
+    </table>
+  </div>
+  `;
+}
+
+function viewUniReports(){
+  return `
+  <div class="two-col">
+    <div class="section">
+      <div class="section-head"><h2>Propuesta de valor</h2></div>
+      <div class="card card-pad">
+        <p class="muted" style="font-size:13.5px; line-height:1.7; margin-bottom:14px;"><b style="color:var(--text);">Problema:</b> la gestión de prácticas suele estar distribuida entre correos, hojas de cálculo y procesos manuales, dificultando tener una visión completa y actualizada.</p>
+        <p class="muted" style="font-size:13.5px; line-height:1.7; margin-bottom:14px;"><b style="color:var(--text);">Solución:</b> una plataforma centralizada que conecta a estudiantes, empresas y universidad en un solo flujo de trabajo.</p>
+        <p class="muted" style="font-size:13.5px; line-height:1.7;"><b style="color:var(--text);">Beneficio institucional:</b> mayor control del proceso y disponibilidad de indicadores para la toma de decisiones.</p>
+      </div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h2>Evolución de la plataforma</h2></div>
+      <div class="card card-pad">
+        <div class="phase-list">
+          ${FASES.map((f,i)=>`
+            <div class="phase-item">
+              <div class="phase-num">${String(i+1).padStart(2,"0")}</div>
+              <div><div class="phase-title">${f.t}</div><div class="phase-desc">${f.d}</div></div>
+            </div>`).join("")}
+        </div>
+        <p class="faint" style="margin-top:14px;">Fases futuras propuestas — no implementadas en este prototipo.</p>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+/* ---------- RENDER PRINCIPAL ---------- */
+/*
+ * captureFocus / restoreFocus
+ * ----------------------------
+ * render() reconstruye todo el HTML de #app en cada cambio de estado,
+ * lo que reemplaza los nodos del DOM existentes. Sin este mecanismo,
+ * un campo de texto con oninput (por ejemplo, los buscadores de
+ * "Oportunidades" y "Estudiantes") pierde el foco después de cada
+ * caracter, porque el input viejo se destruye y se crea uno nuevo.
+ *
+ * La solución: antes de re-renderizar, se guarda cuál elemento tenía
+ * el foco (identificado por el atributo data-focus-key, no por
+ * posición en el DOM) y la posición del cursor. Después de
+ * re-renderizar, se busca el elemento con esa misma clave y se le
+ * devuelve el foco y la posición del cursor.
+ *
+ * Solo afecta a los elementos que tengan data-focus-key; el resto del
+ * comportamiento de render() no cambia.
+ */
+function captureFocus(root){
+  const el = document.activeElement;
+  if(!el || !root.contains(el)) return null;
+  const key = el.getAttribute("data-focus-key");
+  if(!key) return null;
+  const info = { key };
+  if(typeof el.selectionStart === "number" && typeof el.selectionEnd === "number"){
+    info.selectionStart = el.selectionStart;
+    info.selectionEnd = el.selectionEnd;
+  }
+  return info;
+}
+
+function restoreFocus(root, info){
+  if(!info) return;
+  const el = root.querySelector('[data-focus-key="'+info.key+'"]');
+  if(!el) return;
+  el.focus();
+  if(typeof info.selectionStart === "number" && typeof el.setSelectionRange === "function"){
+    try{ el.setSelectionRange(info.selectionStart, info.selectionEnd); }catch(e){}
+  }
+}
+
+function render(){
+  const root = document.getElementById("app");
+  const focusInfo = captureFocus(root);
+  if(state.currentUser && state.screen==="app"){
+    root.innerHTML = renderShell();
+  } else if(state.screen==="login"){
+    root.innerHTML = renderLogin();
+  } else {
+    root.innerHTML = renderLanding();
+  }
+  restoreFocus(root, focusInfo);
+}
+render();
+</script>
+</body>
+</html>
